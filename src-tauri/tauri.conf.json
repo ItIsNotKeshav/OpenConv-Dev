@@ -13,7 +13,10 @@
     },
     "bundle": {
       "active": true,
-      "identifier": "com.ffmpegstudio.app"
+      "identifier": "com.openconv.app",
+      "icon": [
+        "icons/icon.ico"
+      ]
     },
     "windows": [
       {
