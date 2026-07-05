@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OpenConv</title>
+        <script src="formats.js"></script>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+            body {
+                background-color: #0c0c0c;
+                color: white;
+                display: flex;
+                height: 100vh;
+                padding: 20px;
+                overflow: hidden;
+            }
+
+            .sidebar {
+                width: 90px;
+                background-color: #16161a;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                gap: 25px;
+                position: relative;
+            }
+            .menu-toggle {
+                font-size: 24px;
+                cursor: pointer;
+                margin-bottom: 20px;
+                color: #a0a0a0;
+                z-index: 2;
+            }
+
+            .nav-item {
+                width: 65px;
+                height: 65px;
+                border-radius: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                cursor: pointer;
+                color: #a0a0a0;
+                gap: 5px;
+                position: relative;
+                transition: color 0.3s ease;
+                z-index: 2;
+            }
+            .nav-item svg {
+                width: 24px;
+                height: 24px;
+                fill: currentColor;
+            }
+
+            .sidebar-indicator {
+                position: absolute;
+                width: 65px;
+                height: 65px;
+                background-color: #3c3b3b;
+                border-radius: 12px;
+                left: 12.5px;
+                top: 20px;
+                transition:
+                    transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                    background-color 0.3s ease;
+                z-index: 1;
+            }
+
+            #tab-convert.active {
+                color: #4ade80;
+            }
+            #tab-compress.active {
+                color: #a78bfa;
+            }
+            .nav-item.active {
+                color: #4ade80;
+            }
+
+            .workspace {
+                flex: 1;
+                background-color: #0a0a0a;
+                border: 2px solid #16161a;
+                margin-left: 20px;
+                border-radius: 25px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
+
+            .panel-view {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(10px);
+                transition:
+                    opacity 0.35s ease,
+                    transform 0.35s ease;
+            }
+            .panel-view.active-view {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+
+            .converter-container,
+            .compress-grid {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 80px;
+                width: 100%;
+                max-width: 1000px;
+                padding: 0 40px;
+            }
+            .compress-grid {
+                gap: 50px;
+            }
+
+            .file-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                width: 220px;
+                position: relative;
+            }
+            .file-icon {
+                width: 140px;
+                height: 180px;
+                background-color: #d1d1d1;
+                border-radius: 15px;
+                position: relative;
+                clip-path: polygon(0 0, 70% 0, 100% 23%, 100% 100%, 0 100%);
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                padding-bottom: 20px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            }
+            .file-icon::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 42px;
+                height: 42px;
+                background-color: #b0b0b0;
+            }
+            .ext-text {
+                color: #000;
+                font-size: 28px;
+                font-weight: bold;
+                text-transform: lowercase;
+            }
+
+            .info-pill {
+                background-color: #7c62b3;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 13px;
+                width: 100%;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-weight: 500;
+                min-height: 31px;
+                line-height: 15px;
+            }
+            .action-btn {
+                background-color: #5c469c;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+                width: 100%;
+                justify-content: center;
+                text-decoration: none;
+                text-align: center;
+            }
+            .action-btn:hover {
+                background-color: #4c358a;
+            }
+
+            .direction-arrow {
+                width: 120px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+            }
+            .arrow-svg {
+                width: 100%;
+                height: 100%;
+                color: white;
+            }
+
+            .action-main-btn {
+                background-color: #3cb371;
+                color: white;
+                border: none;
+                font-size: 20px;
+                font-weight: bold;
+                padding: 15px 70px;
+                border-radius: 30px;
+                cursor: pointer;
+                margin-top: 60px;
+                transition:
+                    background 0.2s,
+                    transform 0.1s;
+            }
+            .action-main-btn:hover {
+                background-color: #2e9e5f;
+            }
+            .action-main-btn:disabled {
+                background-color: #333;
+                color: #777;
+                cursor: not-allowed;
+            }
+            input[type="file"] {
+                display: none;
+            }
+
+            .dropdown-wrapper {
+                width: 100%;
+                position: relative;
+            }
+            .dropdown-select-trigger {
+                background-color: #5c469c;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                cursor: pointer;
+                text-align: center;
+                font-weight: 500;
+                user-select: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+            }
+            .dropdown-menu-panel {
+                display: none;
+                position: absolute;
+                left: 0;
+                width: 100%;
+                background-color: #16161a;
+                border: 1px solid #333;
+                border-radius: 12px;
+                z-index: 100;
+                max-height: 230px;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .dropdown-search-input {
+                width: 100%;
+                padding: 10px;
+                background-color: #0c0c0c;
+                border: none;
+                border-bottom: 1px solid #333;
+                color: white;
+                outline: none;
+                font-size: 13px;
+            }
+            .dropdown-options-list {
+                overflow-y: auto;
+                flex-grow: 1;
+                max-height: 180px;
+                text-align: left;
+            }
+            .dropdown-category-title {
+                font-size: 11px;
+                text-transform: uppercase;
+                color: #7c62b3;
+                padding: 8px 12px 4px 12px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }
+            .dropdown-option-item {
+                padding: 8px 16px;
+                font-size: 13px;
+                color: #e0e0e0;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+            }
+            .dropdown-option-item:hover {
+                background-color: #2e443a;
+                color: #4ade80;
+            }
+
+            .settings-column {
+                width: 340px;
+                background-color: #16161a;
+                border-radius: 20px;
+                padding: 22px;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                border: 1px solid #222;
+            }
+            .settings-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .settings-group h3 {
+                font-size: 11px;
+                text-transform: uppercase;
+                color: #7c62b3;
+                letter-spacing: 1px;
+                margin-bottom: 2px;
+            }
+            .settings-group label {
+                font-size: 13px;
+                color: #b3b3b3;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+            select.control-input {
+                width: 100%;
+                background-color: #0c0c0c;
+                border: 1px solid #333;
+                color: white;
+                padding: 10px;
+                border-radius: 10px;
+                outline: none;
+                font-size: 14px;
+            }
+            .range-container {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+            input[type="range"] {
+                flex: 1;
+                accent-color: #7c62b3;
+                cursor: pointer;
+                height: 6px;
+                border-radius: 3px;
+            }
+            .range-val {
+                font-size: 13px;
+                font-weight: bold;
+                color: #4ade80;
+            }
+            .checkbox-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: #b3b3b3;
+                cursor: pointer;
+                margin-top: 4px;
+            }
+            .checkbox-container input {
+                accent-color: #4ade80;
+                width: 16px;
+                height: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="nav-item active" id="tab-convert">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"
+                    />
+                </svg>
+                Convert
+            </div>
+
+            <div class="nav-item" id="tab-compress">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0-2-.9-2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"
+                    />
+                </svg>
+                Compress
+            </div>
+
+            <div class="sidebar-indicator" id="sidebar-indicator"></div>
+        </div>
+
+        <div class="workspace">
+            <div class="panel-view active-view" id="panel-convert">
+                <div class="converter-container">
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <span class="ext-text" id="conv-source-ext"
+                                >.---</span
+                            >
+                        </div>
+                        <div class="info-pill" id="conv-source-name">
+                            No File Selected
+                        </div>
+                        <label class="action-btn"
+                            >&#128206; Choose File<input
+                                type="file"
+                                id="conv-file-input"
+                        /></label>
+                    </div>
+                    <div class="direction-arrow">
+                        <svg viewBox="0 0 100 40" class="arrow-svg">
+                            <path
+                                d="M 10 30 Q 10 12 35 12 H 85 M 75 4 L 87 12 L 75 20"
+                                stroke="currentColor"
+                                stroke-width="3.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                fill="none"
+                            />
+                        </svg>
+                    </div>
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <span class="ext-text" id="conv-target-ext"
+                                >.---</span
+                            >
+                        </div>
+                        <div class="info-pill" id="conv-target-status">
+                            Converted_File | ..
+                        </div>
+                        <a
+                            id="conv-download-btn"
+                            class="action-btn"
+                            style="display: none"
+                            >&#128193; Downloads</a
+                        >
+                        <div
+                            class="dropdown-wrapper"
+                            id="conv-dropdown-wrapper"
+                        >
+                            <div
+                                class="dropdown-select-trigger"
+                                id="conv-dropdown-trigger"
+                            >
+                                Target Type ▾
+                            </div>
+                            <div
+                                class="dropdown-menu-panel"
+                                id="conv-dropdown-menu"
+                            >
+                                <input
+                                    type="text"
+                                    class="dropdown-search-input"
+                                    id="conv-search-box"
+                                    placeholder="Type format (e.g. mp4, mp3)..."
+                                />
+                                <div
+                                    class="dropdown-options-list"
+                                    id="conv-options-container"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="action-main-btn" id="conv-submit-btn" disabled>
+                    Convert
+                </button>
+            </div>
+
+            <div class="panel-view" id="panel-compress">
+                <div class="compress-grid">
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <span class="ext-text" id="comp-source-ext"
+                                >.---</span
+                            >
+                        </div>
+                        <div class="info-pill" id="comp-source-name">
+                            No File Selected
+                        </div>
+                        <label class="action-btn"
+                            >&#128206; Choose File<input
+                                type="file"
+                                id="comp-file-input"
+                        /></label>
+                        <a
+                            id="comp-download-btn"
+                            class="action-btn"
+                            style="display: none; margin-top: 10px"
+                            >&#128193; Downloads</a
+                        >
+                    </div>
+                    <div class="direction-arrow">
+                        <svg viewBox="0 0 100 40" class="arrow-svg">
+                            <path
+                                d="M 10 30 Q 10 12 35 12 H 85 M 75 4 L 87 12 L 75 20"
+                                stroke="currentColor"
+                                stroke-width="3.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                fill="none"
+                            />
+                        </svg>
+                    </div>
+                    <div class="settings-column">
+                        <div class="settings-group">
+                            <h3>Video Options</h3>
+                            <label
+                                >Constant Rate Factor (CRF)
+                                <span class="range-val" id="comp-crf-val"
+                                    >23</span
+                                ></label
+                            >
+                            <div class="range-container">
+                                <input
+                                    type="range"
+                                    id="comp-video-crf"
+                                    min="18"
+                                    max="32"
+                                    value="23"
+                                />
+                            </div>
+                            <label style="margin-top: 5px"
+                                >Max Resolution Constraint</label
+                            >
+                            <select class="control-input" id="comp-video-res">
+                                <option value="auto" selected>
+                                    Auto (No Change)
+                                </option>
+                                <option value="1920">
+                                    Max 1080p (Full HD)
+                                </option>
+                                <option value="1280">Max 720p (HD)</option>
+                                <option value="854">Max 480p (SD)</option>
+                            </select>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Audio Options</h3>
+                            <label>Target Audio Bitrate</label>
+                            <select
+                                class="control-input"
+                                id="comp-audio-bitrate"
+                            >
+                                <option value="copy">
+                                    Keep Original Track (Fastest)
+                                </option>
+                                <option value="320k">320 kbps</option>
+                                <option value="128k" selected>
+                                    128 kbps (Standard)
+                                </option>
+                                <option value="64k">
+                                    64 kbps (Mono Voice)
+                                </option>
+                            </select>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="comp-audio-mono" />
+                                Downmix Track to Mono
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="action-main-btn" id="comp-submit-btn" disabled>
+                    Compress
+                </button>
+            </div>
+        </div>
+
+        <script>
+            const tabConvert = document.getElementById("tab-convert");
+            const tabCompress = document.getElementById("tab-compress");
+            const indicator = document.getElementById("sidebar-indicator");
+            const panelConvert = document.getElementById("panel-convert");
+            const panelCompress = document.getElementById("panel-compress");
+
+            tabConvert.addEventListener("click", () => {
+                tabCompress.classList.remove("active");
+                tabConvert.classList.add("active");
+
+                indicator.style.transform = "translateY(0px)";
+                indicator.style.backgroundColor = "#2e443a";
+
+                panelCompress.classList.remove("active-view");
+                panelConvert.classList.add("active-view");
+            });
+
+            tabCompress.addEventListener("click", () => {
+                tabConvert.classList.remove("active");
+                tabCompress.classList.add("active");
+
+                indicator.style.transform = "translateY(90px)";
+                indicator.style.backgroundColor = "#3b2e5c";
+
+                panelConvert.classList.remove("active-view");
+                panelCompress.classList.add("active-view");
+            });
+
+            const isTauri = window.__TAURI__ != null;
+            const invoke = isTauri ? window.__TAURI__.tauri.invoke : null;
+            const openDialog = isTauri ? window.__TAURI__.dialog.open : null;
+
+            let convAbsoluteFilePath = null;
+            let compAbsoluteFilePath = null;
+
+            const convFileInput = document.getElementById("conv-file-input");
+            const convSourceExt = document.getElementById("conv-source-ext");
+            const convSourceName = document.getElementById("conv-source-name");
+            const convDropdownTrigger = document.getElementById(
+                "conv-dropdown-trigger",
+            );
+            const convDropdownMenu =
+                document.getElementById("conv-dropdown-menu");
+            const convSearchBox = document.getElementById("conv-search-box");
+            const convOptionsContainer = document.getElementById(
+                "conv-options-container",
+            );
+            const convTargetExt = document.getElementById("conv-target-ext");
+            const convTargetStatus =
+                document.getElementById("conv-target-status");
+            const convSubmitBtn = document.getElementById("conv-submit-btn");
+            const convDownloadBtn =
+                document.getElementById("conv-download-btn");
+
+            let chosenExtension = null,
+                convInputType = null;
+
+            convDropdownTrigger.addEventListener("click", () => {
+                const visible = convDropdownMenu.style.display === "flex";
+                if (visible) {
+                    convDropdownMenu.style.display = "none";
+                } else {
+                    convDropdownMenu.style.display = "flex";
+                    convSearchBox.value = "";
+                    renderFormatsList();
+                    convSearchBox.focus();
+
+                    const rect = convDropdownTrigger.getBoundingClientRect();
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    if (spaceBelow < 240) {
+                        convDropdownMenu.style.top = "auto";
+                        convDropdownMenu.style.bottom = "100%";
+                        convDropdownMenu.style.marginBottom = "6px";
+                        convDropdownMenu.style.marginTop = "0px";
+                    } else {
+                        convDropdownMenu.style.bottom = "auto";
+                        convDropdownMenu.style.top = "100%";
+                        convDropdownMenu.style.marginTop = "6px";
+                        convDropdownMenu.style.marginBottom = "0px";
+                    }
+                }
+            });
+
+            document.addEventListener("click", (e) => {
+                const wrapper = document.getElementById(
+                    "conv-dropdown-wrapper",
+                );
+                if (wrapper && !wrapper.contains(e.target)) {
+                    convDropdownMenu.style.display = "none";
+                }
+            });
+
+            if (convFileInput && convFileInput.parentElement) {
+                if (isTauri) {
+                    convFileInput.parentElement.addEventListener(
+                        "click",
+                        async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            const selectedFile = await openDialog({
+                                multiple: false,
+                                filters: [
+                                    {
+                                        name: "Media Files",
+                                        extensions: [
+                                            "mp4",
+                                            "mkv",
+                                            "avi",
+                                            "mov",
+                                            "mp3",
+                                            "wav",
+                                            "flac",
+                                            "png",
+                                            "jpg",
+                                            "jpeg",
+                                        ],
+                                    },
+                                ],
+                            });
+
+                            if (selectedFile) {
+                                handleConvFileSelection(
+                                    selectedFile,
+                                    selectedFile
+                                        .split("\\")
+                                        .pop()
+                                        .split("/")
+                                        .pop(),
+                                );
+                            }
+                        },
+                    );
+                } else {
+                    convFileInput.addEventListener("change", (e) => {
+                        if (e.target.files.length > 0) {
+                            const file = e.target.files[0];
+                            handleConvFileSelection(file.name, file.name);
+                        }
+                    });
+                }
+            }
+
+            function handleConvFileSelection(filePath, fileName) {
+                convAbsoluteFilePath = filePath;
+                const fileExt = "." + fileName.split(".").pop();
+
+                convSourceName.textContent = fileName;
+                convSourceExt.textContent = fileExt.toLowerCase();
+
+                const isAudio = [
+                    "mp3",
+                    "wav",
+                    "flac",
+                    "aac",
+                    "ogg",
+                    "m4a",
+                ].includes(fileExt.replace(".", "").toLowerCase());
+                convInputType = isAudio ? "audio" : "video";
+
+                chosenExtension = null;
+                convDropdownTrigger.textContent = "Target Type ▾";
+                convTargetExt.textContent = ".---";
+                convSubmitBtn.disabled = true;
+                if (convDownloadBtn) convDownloadBtn.style.display = "none";
+
+                const dropdownWrapper = document.getElementById(
+                    "conv-dropdown-wrapper",
+                );
+                if (dropdownWrapper) dropdownWrapper.style.display = "block";
+
+                convTargetStatus.textContent =
+                    "Ready to transcode local file stream asset";
+                renderFormatsList();
+            }
+
+            if (convSearchBox) {
+                convSearchBox.addEventListener("input", () =>
+                    renderFormatsList(convSearchBox.value.trim().toLowerCase()),
+                );
+            }
+
+            function renderFormatsList(query = "") {
+                convOptionsContainer.innerHTML = "";
+                let pool = AVAILABLE_FORMATS;
+                if (convInputType === "audio")
+                    pool = pool.filter((f) => f.type === "audio");
+
+                let matches =
+                    query === ""
+                        ? pool.filter((f) => f.popular)
+                        : pool.filter(
+                              (f) =>
+                                  f.ext.includes(query) ||
+                                  f.name.toLowerCase().includes(query),
+                          );
+
+                if (matches.length === 0) {
+                    convOptionsContainer.innerHTML =
+                        '<div class="dropdown-category-title" style="text-align:center;">❌ No matches found</div>';
+                    return;
+                }
+
+                if (query === "") {
+                    const h = document.createElement("div");
+                    h.className = "dropdown-category-title";
+                    h.style.color = "#4ade80";
+                    h.textContent = " Popular Formats";
+                    convOptionsContainer.appendChild(h);
+                }
+
+                const video = matches.filter((f) => f.type === "video");
+                const audio = matches.filter((f) => f.type === "audio");
+                const image = matches.filter((f) => f.type === "image");
+
+                if (video.length > 0) {
+                    if (query !== "") appendHead(" Video");
+                    video.forEach((i) => appendRow(i));
+                }
+                if (audio.length > 0) {
+                    if (query !== "") appendHead(" Audio");
+                    audio.forEach((i) => appendRow(i));
+                }
+                if (image.length > 0) {
+                    if (query !== "") appendHead("Images");
+                    image.forEach((i) => appendRow(i));
+                }
+            }
+
+            function appendHead(txt) {
+                const h = document.createElement("div");
+                h.className = "dropdown-category-title";
+                h.textContent = txt;
+                convOptionsContainer.appendChild(h);
+            }
+
+            function appendRow(i) {
+                const r = document.createElement("div");
+                r.className = "dropdown-option-item";
+                r.textContent = i.name;
+                r.addEventListener("click", () => {
+                    chosenExtension = i.ext;
+                    convDropdownTrigger.textContent = i.ext.toUpperCase();
+                    convTargetExt.textContent = `.${i.ext}`;
+                    convDropdownMenu.style.display = "none";
+                    convSubmitBtn.disabled = false;
+                });
+                convOptionsContainer.appendChild(r);
+            }
+
+            convSubmitBtn.addEventListener("click", async () => {
+                if (!convAbsoluteFilePath || !chosenExtension) return;
+
+                if (!isTauri) {
+                    alert(
+                        "This feature requires running inside the Tauri desktop app.",
+                    );
+                    return;
+                }
+
+                const targetFolderDirectory = await openDialog({
+                    directory: true,
+                    multiple: false,
+                    title: "Choose Destination Folder",
+                });
+
+                if (!targetFolderDirectory) return;
+
+                convSubmitBtn.textContent = "Processing...";
+                convSubmitBtn.disabled = true;
+                convTargetStatus.textContent =
+                    "Compiling vector codec targets...";
+
+                try {
+                    const successMessage = await invoke("run_conversion", {
+                        inputPath: convAbsoluteFilePath,
+                        targetDir: targetFolderDirectory,
+                        targetExt: chosenExtension,
+                    });
+
+                    convSubmitBtn.textContent = "Done!";
+                    convTargetStatus.textContent = "Conversion Complete!";
+                    alert(successMessage);
+                    convSubmitBtn.disabled = false;
+                    convSubmitBtn.textContent = "Convert";
+                } catch (err) {
+                    alert("Desktop Compilation Failure: " + err);
+                    resetConv();
+                }
+            });
+
+            function resetConv() {
+                convSubmitBtn.textContent = "Convert";
+                convSubmitBtn.disabled = false;
+            }
+
+            const compFileInput = document.getElementById("comp-file-input");
+            const compSourceExt = document.getElementById("comp-source-ext");
+            const compSourceName = document.getElementById("comp-source-name");
+            const compVideoCrf = document.getElementById("comp-video-crf");
+            const compCrfVal = document.getElementById("comp-crf-val");
+            const compVideoRes = document.getElementById("comp-video-res");
+            const compAudioBitrate =
+                document.getElementById("comp-audio-bitrate");
+            const compAudioMono = document.getElementById("comp-audio-mono");
+            const compSubmitBtn = document.getElementById("comp-submit-btn");
+            const compDownloadBtn =
+                document.getElementById("comp-download-btn");
+
+            if (compVideoCrf) {
+                compVideoCrf.addEventListener("input", (e) => {
+                    if (compCrfVal) compCrfVal.textContent = e.target.value;
+                });
+            }
+
+            if (compFileInput && compFileInput.parentElement) {
+                if (isTauri) {
+                    compFileInput.parentElement.addEventListener(
+                        "click",
+                        async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            const selectedFile = await openDialog({
+                                multiple: false,
+                                filters: [
+                                    {
+                                        name: "Media Files",
+                                        extensions: [
+                                            "mp4",
+                                            "mkv",
+                                            "avi",
+                                            "mov",
+                                            "mp3",
+                                            "wav",
+                                            "flac",
+                                        ],
+                                    },
+                                ],
+                            });
+
+                            if (selectedFile) {
+                                handleCompFileSelection(
+                                    selectedFile,
+                                    selectedFile
+                                        .split("\\")
+                                        .pop()
+                                        .split("/")
+                                        .pop(),
+                                );
+                            }
+                        },
+                    );
+                } else {
+                    compFileInput.addEventListener("change", (e) => {
+                        if (e.target.files.length > 0) {
+                            const file = e.target.files[0];
+                            handleCompFileSelection(file.name, file.name);
+                        }
+                    });
+                }
+            }
+
+            function handleCompFileSelection(filePath, fileName) {
+                compAbsoluteFilePath = filePath;
+                const fileExt = "." + fileName.split(".").pop();
+
+                compSourceName.textContent = fileName;
+                compSourceExt.textContent = fileExt.toLowerCase();
+                compSubmitBtn.disabled = false;
+                compSubmitBtn.textContent = "Compress";
+                if (compDownloadBtn) compDownloadBtn.style.display = "none";
+            }
+
+            compSubmitBtn.addEventListener("click", async () => {
+                if (!compAbsoluteFilePath) return;
+
+                if (!isTauri) {
+                    alert(
+                        "This feature requires running inside the Tauri desktop app.",
+                    );
+                    return;
+                }
+
+                const targetFolderDirectory = await openDialog({
+                    directory: true,
+                    multiple: false,
+                    title: "Select Compression Output Folder",
+                });
+
+                if (!targetFolderDirectory) return;
+
+                compSubmitBtn.textContent = "Compiling...";
+                compSubmitBtn.disabled = true;
+
+                try {
+                    const successMessage = await invoke("run_compression", {
+                        inputPath: compAbsoluteFilePath,
+                        targetDir: targetFolderDirectory,
+                        crf: compVideoCrf.value,
+                        resolution: compVideoRes.value,
+                        bitrate: compAudioBitrate.value,
+                        mono: compAudioMono.checked,
+                    });
+
+                    compSubmitBtn.textContent = "Success!";
+                    alert(successMessage);
+                    compSubmitBtn.disabled = false;
+                    compSubmitBtn.textContent = "Compress";
+                } catch (err) {
+                    alert("Desktop Compression Failure: " + err);
+                    resetComp();
+                }
+            });
+
+            function resetComp() {
+                compSubmitBtn.textContent = "Compress";
+                compSubmitBtn.disabled = false;
+            }
+        </script>
+    </body>
+</html>

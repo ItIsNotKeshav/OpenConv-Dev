@@ -1,0 +1,20 @@
+[package]
+name = "OpenConv"
+version = "0.1.0"
+description = "A premium native desktop wrapper frontend studio for FFmpeg"
+edition = "2021"
+
+# Tells Rust where the main compilation starting block is located
+[[bin]]
+name = "OpenConv"
+path = "src/main.rs"
+
+[dependencies]
+# The core Tauri engine infrastructure layout framework
+tauri = { version = "1.8", features = [ "dialog-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[build-dependencies]
+# Compiles the background system settings hooks on build runtime execution
+tauri-build = { version = "1.5", features = [] }
