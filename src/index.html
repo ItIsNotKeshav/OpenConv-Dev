@@ -6,1006 +6,3055 @@
         <title>OpenConv</title>
         <script src="formats.js"></script>
         <style>
+            :root {
+                color-scheme: dark;
+                --space-1: 4px;
+                --space-2: 8px;
+                --space-3: 12px;
+                --space-4: 16px;
+                --space-5: 20px;
+                --space-6: 24px;
+                --space-8: 32px;
+                --radius-sm: 10px;
+                --radius-md: 12px;
+                --radius-lg: 18px;
+                --radius-xl: 22px;
+                --font:
+                    "Google Sans Flex", "Google Sans", "Product Sans", "Inter",
+                    "SF Pro Display", "Segoe UI", system-ui, -apple-system,
+                    BlinkMacSystemFont, sans-serif;
+                --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+                --bg: #10110f;
+                --surface: #181a17;
+                --surface-2: #20231f;
+                --surface-3: #2a2f29;
+                --border: rgba(255, 255, 255, 0.06);
+                --border-strong: rgba(255, 255, 255, 0.12);
+                --text: #f7f5ee;
+                --text-2: #a5aaa2;
+                --text-3: #737a70;
+                --accent: #ff5a2f;
+                --accent-soft: rgba(255, 90, 47, 0.14);
+                --accent-2: #9bc8ff;
+                --accent-2-soft: rgba(155, 200, 255, 0.14);
+                --nav-active-bg: #2a2f29;
+                --nav-active-text: #f7f5ee;
+                --hover: #282d27;
+                --success: #22c55e;
+                --warning: #f59e0b;
+                --danger: #ef4444;
+                --shadow: 0 20px 60px rgba(0, 0, 0, 0.26);
+                --field-shadow: inset 0 0 0 1px var(--border);
+            }
+
+            [data-theme="light"] {
+                color-scheme: light;
+                --bg: #e9eee8;
+                --surface: #fbfbf7;
+                --surface-2: #f1f3ee;
+                --surface-3: #e5e9e1;
+                --border: rgba(16, 17, 15, 0.07);
+                --border-strong: rgba(16, 17, 15, 0.13);
+                --text: #11110f;
+                --text-2: #656c64;
+                --text-3: #91988f;
+                --accent: #ff4b26;
+                --accent-soft: rgba(255, 75, 38, 0.11);
+                --accent-2: #9bc8ff;
+                --accent-2-soft: rgba(155, 200, 255, 0.26);
+                --nav-active-bg: #11110f;
+                --nav-active-text: #ffffff;
+                --hover: #e7ebe4;
+                --shadow: 0 18px 55px rgba(30, 35, 30, 0.09);
+            }
+
             * {
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             }
+
+            html,
             body {
-                background-color: #0c0c0c;
-                color: white;
-                display: flex;
-                height: 100vh;
-                padding: 20px;
+                height: 100%;
+            }
+
+            body {
+                min-width: 860px;
                 overflow: hidden;
+                background:
+                    radial-gradient(
+                        circle at 78% 14%,
+                        var(--accent-2-soft),
+                        transparent 28%
+                    ),
+                    var(--bg);
+                color: var(--text);
+                font-family: var(--font);
+                letter-spacing: 0;
+                transition:
+                    background-color 250ms var(--ease),
+                    color 250ms var(--ease);
+            }
+
+            button,
+            input,
+            select,
+            textarea {
+                font: inherit;
+            }
+
+            button,
+            label,
+            select,
+            input[type="range"],
+            input[type="checkbox"] {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            button {
+                border: 0;
+            }
+
+            .app-shell {
+                height: 100vh;
+                padding: var(--space-6);
+                display: grid;
+                grid-template-columns: 270px minmax(0, 1fr) 360px;
+                gap: var(--space-6);
             }
 
             .sidebar {
-                width: 90px;
-                background-color: #16161a;
-                border-radius: 20px;
+                min-height: 0;
+                border-radius: var(--radius-xl);
+                background: var(--surface);
+                box-shadow: var(--shadow);
+                padding: var(--space-5);
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                padding: 20px 0;
-                gap: 25px;
-                position: relative;
+                border: 1px solid var(--border);
             }
-            .menu-toggle {
-                font-size: 24px;
-                cursor: pointer;
-                margin-bottom: 20px;
-                color: #a0a0a0;
-                z-index: 2;
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: var(--space-3);
+                padding: var(--space-1) var(--space-1) var(--space-6);
+            }
+
+            .brand-mark {
+                width: 40px;
+                height: 40px;
+                border-radius: 14px;
+                display: grid;
+                place-items: center;
+                color: var(--surface);
+                background: var(--text);
+                box-shadow: inset 0 0 0 1px var(--border);
+            }
+
+            .brand-title {
+                font-size: 16px;
+                line-height: 1.15;
+                font-weight: 650;
+            }
+
+            .brand-subtitle {
+                margin-top: 3px;
+                color: var(--text-2);
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .nav-list {
+                display: grid;
+                gap: var(--space-1);
             }
 
             .nav-item {
-                width: 65px;
-                height: 65px;
-                border-radius: 12px;
+                position: relative;
+                width: 100%;
+                height: 42px;
+                border-radius: var(--radius-md);
+                background: transparent;
+                color: var(--text-2);
                 display: flex;
-                flex-direction: column;
+                align-items: center;
+                gap: var(--space-3);
+                padding: 0 var(--space-3) 0 var(--space-4);
+                text-align: left;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                transition:
+                    background-color 120ms var(--ease),
+                    color 120ms var(--ease),
+                    transform 120ms var(--ease);
+            }
+
+            .nav-item::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 11px;
+                width: 3px;
+                height: 20px;
+                border-radius: 999px;
+                background: var(--accent);
+                opacity: 0;
+                transform: scaleY(0.5);
+                transition:
+                    opacity 180ms var(--ease),
+                    transform 180ms var(--ease);
+            }
+
+            .nav-item:hover {
+                background: var(--hover);
+                color: var(--text);
+            }
+
+            .nav-item:active {
+                transform: translateY(1px);
+            }
+
+            .nav-item.active {
+                background: var(--nav-active-bg);
+                color: var(--nav-active-text);
+            }
+
+            .nav-item.active::before {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+
+            .nav-item[aria-disabled="true"] {
+                cursor: default;
+                color: var(--text-3);
+            }
+
+            .nav-item[aria-disabled="true"]:hover {
+                background: transparent;
+                color: var(--text-3);
+            }
+
+            .sidebar-footer {
+                margin-top: auto;
+                display: grid;
+                gap: 10px;
+                padding: 0 var(--space-1) var(--space-1);
+            }
+
+            .theme-label {
+                color: var(--text-2);
+                font-size: 12px;
+                font-weight: 500;
+                opacity: 0.72;
+            }
+
+            .theme-toggle {
+                position: relative;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0;
+                border-radius: 14px;
+                background: var(--surface-2);
+                padding: 4px;
+                box-shadow: var(--field-shadow);
+            }
+
+            .theme-toggle::before {
+                content: "";
+                position: absolute;
+                top: 4px;
+                bottom: 4px;
+                left: 4px;
+                width: calc((100% - 8px) / 3);
+                border-radius: 10px;
+                background: var(--surface);
+                box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+                transform: translateX(calc(var(--theme-index, 1) * 100%));
+                transition:
+                    transform 250ms var(--ease),
+                    background-color 250ms var(--ease);
+            }
+
+            .theme-option {
+                position: relative;
+                z-index: 1;
+                height: 32px;
+                border-radius: 10px;
+                background: transparent;
+                color: var(--text-2);
+                display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 11px;
+                gap: 6px;
                 cursor: pointer;
-                color: #a0a0a0;
-                gap: 5px;
-                position: relative;
-                transition: color 0.3s ease;
-                z-index: 2;
-            }
-            .nav-item svg {
-                width: 24px;
-                height: 24px;
-                fill: currentColor;
-            }
-
-            .sidebar-indicator {
-                position: absolute;
-                width: 65px;
-                height: 65px;
-                background-color: #3c3b3b;
-                border-radius: 12px;
-                left: 12.5px;
-                top: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                opacity: 0.68;
                 transition:
-                    transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-                    background-color 0.3s ease;
-                z-index: 1;
+                    color 120ms var(--ease),
+                    opacity 120ms var(--ease);
             }
 
-            #tab-convert.active {
-                color: #4ade80;
+            .theme-option.active {
+                color: var(--text);
+                opacity: 1;
             }
-            #tab-compress.active {
-                color: #a78bfa;
-            }
-            .nav-item.active {
-                color: #4ade80;
+
+            .version {
+                color: var(--text-3);
+                font-size: 12px;
+                font-weight: 500;
+                opacity: 0.72;
             }
 
             .workspace {
-                flex: 1;
-                background-color: #0a0a0a;
-                border: 2px solid #16161a;
-                margin-left: 20px;
-                border-radius: 25px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
+                min-width: 0;
+                min-height: 0;
+                border-radius: var(--radius-xl);
+                background: var(--surface);
+                border: 1px solid var(--border);
+                box-shadow: var(--shadow);
                 position: relative;
+                overflow: hidden;
             }
 
             .panel-view {
                 position: absolute;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
+                inset: 0;
                 opacity: 0;
                 pointer-events: none;
-                transform: translateY(10px);
+                transform: translateY(8px);
                 transition:
-                    opacity 0.35s ease,
-                    transform 0.35s ease;
+                    opacity 180ms var(--ease),
+                    transform 180ms var(--ease);
+                overflow: auto;
+                scrollbar-width: none;
             }
+
+            .panel-view::-webkit-scrollbar {
+                display: none;
+            }
+
             .panel-view.active-view {
                 opacity: 1;
                 pointer-events: auto;
                 transform: translateY(0);
             }
 
-            .converter-container,
-            .compress-grid {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 80px;
-                width: 100%;
-                max-width: 1000px;
-                padding: 0 40px;
-            }
-            .compress-grid {
-                gap: 50px;
+            .view-shell {
+                min-height: 100%;
+                padding: var(--space-8);
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: var(--space-8);
+                align-content: start;
             }
 
-            .file-card {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                width: 220px;
-                position: relative;
-            }
-            .file-icon {
-                width: 140px;
-                height: 180px;
-                background-color: #d1d1d1;
-                border-radius: 15px;
-                position: relative;
-                clip-path: polygon(0 0, 70% 0, 100% 23%, 100% 100%, 0 100%);
-                display: flex;
-                align-items: flex-end;
-                justify-content: center;
-                padding-bottom: 20px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            }
-            .file-icon::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 42px;
-                height: 42px;
-                background-color: #b0b0b0;
-            }
-            .ext-text {
-                color: #000;
-                font-size: 28px;
-                font-weight: bold;
-                text-transform: lowercase;
+            .content-main {
+                min-width: 0;
             }
 
-            .info-pill {
-                background-color: #7c62b3;
-                color: white;
-                padding: 8px 16px;
-                border-radius: 20px;
+            .view-header {
+                margin-bottom: var(--space-8);
+            }
+
+            .view-kicker {
+                color: var(--accent);
                 font-size: 13px;
-                width: 100%;
-                text-align: center;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-weight: 500;
-                min-height: 31px;
-                line-height: 15px;
-            }
-            .action-btn {
-                background-color: #5c469c;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 20px;
-                font-size: 14px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-weight: 500;
-                width: 100%;
-                justify-content: center;
-                text-decoration: none;
-                text-align: center;
-            }
-            .action-btn:hover {
-                background-color: #4c358a;
+                line-height: 1.3;
+                font-weight: 600;
+                letter-spacing: 0;
             }
 
-            .direction-arrow {
-                width: 120px;
-                height: 60px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                user-select: none;
-            }
-            .arrow-svg {
-                width: 100%;
-                height: 100%;
-                color: white;
+            .view-header h1 {
+                margin-top: var(--space-2);
+                max-width: 680px;
+                font-size: 36px;
+                line-height: 1.08;
+                font-weight: 700;
+                letter-spacing: -0.02em;
             }
 
-            .action-main-btn {
-                background-color: #3cb371;
-                color: white;
-                border: none;
-                font-size: 20px;
-                font-weight: bold;
-                padding: 15px 70px;
-                border-radius: 30px;
-                cursor: pointer;
-                margin-top: 60px;
+            .view-header p {
+                max-width: 560px;
+                margin-top: var(--space-3);
+                color: var(--text-2);
+                font-size: 13px;
+                line-height: 1.65;
+                font-weight: 400;
+            }
+
+            .workflow {
+                display: grid;
+                gap: var(--space-6);
+            }
+
+            .workflow-step {
+                display: grid;
+                grid-template-columns: 40px minmax(0, 1fr);
+                gap: var(--space-4);
+                align-items: start;
+            }
+
+            .step-marker {
+                width: 40px;
+                height: 40px;
+                border-radius: 14px;
+                background: var(--surface-2);
+                color: var(--accent);
+                display: grid;
+                place-items: center;
+                box-shadow: var(--field-shadow);
+            }
+
+            .workflow-card {
+                min-width: 0;
+                border-radius: var(--radius-lg);
+                background: var(--surface-2);
+                padding: var(--space-6);
                 transition:
-                    background 0.2s,
-                    transform 0.1s;
+                    background-color 150ms var(--ease),
+                    transform 150ms var(--ease);
             }
-            .action-main-btn:hover {
-                background-color: #2e9e5f;
+
+            .workflow-card:hover {
+                background: var(--hover);
+                transform: translateY(-1px);
             }
-            .action-main-btn:disabled {
-                background-color: #333;
-                color: #777;
-                cursor: not-allowed;
+
+            .card-heading {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: var(--space-4);
+                margin-bottom: var(--space-5);
             }
-            input[type="file"] {
+
+            .card-heading h2 {
+                font-size: 20px;
+                line-height: 1.25;
+                font-weight: 650;
+                letter-spacing: -0.01em;
+            }
+
+            .card-heading span {
+                color: var(--text-2);
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .upload-card {
+                width: 100%;
+                min-height: 220px;
+                border: 1px dashed var(--border-strong);
+                border-radius: var(--radius-lg);
+                background: color-mix(in srgb, var(--surface) 58%, transparent);
+                padding: var(--space-6);
+                cursor: pointer;
+                display: grid;
+                align-items: center;
+                transition:
+                    background-color 150ms var(--ease),
+                    border-color 150ms var(--ease),
+                    transform 150ms var(--ease);
+            }
+
+            .upload-card:hover,
+            .upload-card.is-dragging {
+                border-color: color-mix(in srgb, var(--accent) 42%, var(--border-strong));
+                background: var(--surface);
+                transform: translateY(-1px);
+            }
+
+            .upload-empty {
+                display: grid;
+                justify-items: center;
+                text-align: center;
+                gap: var(--space-3);
+            }
+
+            .upload-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 16px;
+                display: grid;
+                place-items: center;
+                color: var(--accent);
+                background: var(--accent-soft);
+            }
+
+            .upload-title {
+                font-size: 17px;
+                line-height: 1.3;
+                font-weight: 600;
+            }
+
+            .upload-title .browse-text {
+                color: var(--accent);
+            }
+
+            .upload-description {
+                max-width: 330px;
+                color: var(--text-2);
+                font-size: 13px;
+                line-height: 1.55;
+                font-weight: 400;
+            }
+
+            .file-preview {
+                display: none;
+                grid-template-columns: 112px minmax(0, 1fr);
+                gap: var(--space-5);
+                align-items: start;
+            }
+
+            .upload-card.has-file .upload-empty {
                 display: none;
             }
 
+            .upload-card.has-file .file-preview {
+                display: grid;
+            }
+
+            .thumb {
+                width: 112px;
+                aspect-ratio: 16 / 10;
+                border-radius: 16px;
+                background:
+                    linear-gradient(135deg, var(--accent-2-soft), transparent),
+                    var(--surface);
+                display: grid;
+                place-items: center;
+                color: var(--text);
+                box-shadow: var(--field-shadow);
+            }
+
+            .file-title-row {
+                min-width: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--space-4);
+                margin-bottom: var(--space-4);
+            }
+
+            .file-name {
+                min-width: 0;
+                color: var(--text);
+                font-size: 17px;
+                line-height: 1.3;
+                font-weight: 600;
+                overflow-wrap: anywhere;
+            }
+
+            .file-ext {
+                flex: 0 0 auto;
+                border-radius: 999px;
+                background: var(--text);
+                color: var(--surface);
+                padding: 5px 9px;
+                font-size: 12px;
+                font-weight: 650;
+                text-transform: uppercase;
+            }
+
+            .metadata-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                column-gap: var(--space-5);
+            }
+
+            .meta-row {
+                min-height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--space-3);
+                border-top: 1px solid var(--border);
+                color: var(--text-2);
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .meta-row strong {
+                color: var(--text);
+                font-size: 12px;
+                font-weight: 500;
+                text-align: right;
+                white-space: nowrap;
+            }
+
+            .settings-layout {
+                display: grid;
+                gap: var(--space-6);
+            }
+
+            .settings-section {
+                display: grid;
+                gap: var(--space-4);
+            }
+
+            .settings-section.is-disabled {
+                opacity: 0.42;
+                pointer-events: none;
+            }
+
+            .settings-section + .settings-section {
+                padding-top: var(--space-2);
+            }
+
+            .settings-section h3 {
+                color: var(--text);
+                font-size: 17px;
+                line-height: 1.3;
+                font-weight: 600;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: var(--space-4);
+            }
+
+            .field {
+                min-width: 0;
+                display: grid;
+                gap: var(--space-2);
+            }
+
+            .field.full {
+                grid-column: 1 / -1;
+            }
+
+            .field label,
+            .field-label {
+                color: var(--text-2);
+                font-size: 13px;
+                line-height: 1.3;
+                font-weight: 500;
+                opacity: 0.74;
+            }
+
             .dropdown-wrapper {
-                width: 100%;
                 position: relative;
             }
-            .dropdown-select-trigger {
-                background-color: #5c469c;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 20px;
+
+            .select-like,
+            .text-like,
+            select.control-input,
+            textarea.control-input {
+                width: 100%;
+                height: 42px;
+                border: 0;
+                border-radius: var(--radius-md);
+                background: var(--surface);
+                color: var(--text);
+                box-shadow: var(--field-shadow);
+                outline: none;
+                padding: 0 18px;
                 font-size: 14px;
-                cursor: pointer;
-                text-align: center;
                 font-weight: 500;
-                user-select: none;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 5px;
+                line-height: 42px;
+                transition:
+                    background-color 120ms var(--ease),
+                    box-shadow 120ms var(--ease);
             }
+
+            .text-like {
+                display: flex;
+                align-items: center;
+            }
+
+            textarea.control-input {
+                min-height: 84px;
+                height: auto;
+                resize: none;
+                padding: 12px 13px;
+                color: var(--text-2);
+                line-height: 1.45;
+            }
+
+            .inline-toggle {
+                height: 42px;
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-2);
+                color: var(--text-2);
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            .inline-toggle input {
+                width: 17px;
+                height: 17px;
+                accent-color: var(--accent);
+            }
+
+            .select-like,
+            select.control-input {
+                appearance: none;
+                background-image:
+                    linear-gradient(45deg, transparent 50%, var(--text-2) 50%),
+                    linear-gradient(135deg, var(--text-2) 50%, transparent 50%);
+                background-position:
+                    calc(100% - 17px) 18px,
+                    calc(100% - 12px) 18px;
+                background-size:
+                    5px 5px,
+                    5px 5px;
+                background-repeat: no-repeat;
+            }
+
+            .select-like {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .select-like:hover,
+            .text-like:hover,
+            select.control-input:hover,
+            textarea.control-input:hover {
+                background-color: var(--surface-3);
+            }
+
+            .select-like:focus-visible,
+            select.control-input:focus-visible,
+            textarea.control-input:focus-visible,
+            button:focus-visible,
+            .action-btn:focus-visible,
+            .upload-card:focus-within {
+                outline: 2px solid color-mix(in srgb, var(--accent) 74%, transparent);
+                outline-offset: 3px;
+            }
+
             .dropdown-menu-panel {
                 display: none;
                 position: absolute;
                 left: 0;
                 width: 100%;
-                background-color: #16161a;
-                border: 1px solid #333;
-                border-radius: 12px;
-                z-index: 100;
-                max-height: 230px;
+                max-height: 280px;
+                z-index: 10;
                 flex-direction: column;
                 overflow: hidden;
-            }
-            .dropdown-search-input {
-                width: 100%;
-                padding: 10px;
-                background-color: #0c0c0c;
-                border: none;
-                border-bottom: 1px solid #333;
-                color: white;
-                outline: none;
-                font-size: 13px;
-            }
-            .dropdown-options-list {
-                overflow-y: auto;
-                flex-grow: 1;
-                max-height: 180px;
-                text-align: left;
-            }
-            .dropdown-category-title {
-                font-size: 11px;
-                text-transform: uppercase;
-                color: #7c62b3;
-                padding: 8px 12px 4px 12px;
-                font-weight: bold;
-                letter-spacing: 1px;
-            }
-            .dropdown-option-item {
-                padding: 8px 16px;
-                font-size: 13px;
-                color: #e0e0e0;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-            }
-            .dropdown-option-item:hover {
-                background-color: #2e443a;
-                color: #4ade80;
+                margin-top: var(--space-2);
+                border-radius: 16px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+                animation: menuIn 200ms var(--ease);
             }
 
-            .settings-column {
-                width: 340px;
-                background-color: #16161a;
-                border-radius: 20px;
-                padding: 22px;
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-                border: 1px solid #222;
-            }
-            .settings-group {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-            .settings-group h3 {
-                font-size: 11px;
-                text-transform: uppercase;
-                color: #7c62b3;
-                letter-spacing: 1px;
-                margin-bottom: 2px;
-            }
-            .settings-group label {
-                font-size: 13px;
-                color: #b3b3b3;
-                display: flex;
-                justify-content: space-between;
+            .dropdown-search-input {
                 width: 100%;
-            }
-            select.control-input {
-                width: 100%;
-                background-color: #0c0c0c;
-                border: 1px solid #333;
-                color: white;
-                padding: 10px;
-                border-radius: 10px;
+                height: 42px;
+                border: 0;
+                border-bottom: 1px solid var(--border);
+                background: transparent;
+                color: var(--text);
                 outline: none;
+                padding: 0 var(--space-4);
                 font-size: 14px;
             }
-            .range-container {
+
+            .dropdown-search-input::placeholder {
+                color: var(--text-3);
+            }
+
+            .dropdown-options-list {
+                max-height: 228px;
+                overflow-y: auto;
+                padding: var(--space-2);
+            }
+
+            .dropdown-category-title {
+                padding: var(--space-2) var(--space-2) var(--space-1);
+                color: var(--text-3);
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .dropdown-option-item {
+                min-height: 36px;
+                border-radius: var(--radius-sm);
                 display: flex;
                 align-items: center;
-                width: 100%;
+                padding: 0 var(--space-2);
+                color: var(--text);
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                transition:
+                    background-color 120ms var(--ease),
+                    color 120ms var(--ease);
             }
+
+            .dropdown-option-item:hover {
+                background: var(--hover);
+            }
+
+            .slider-row {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 42px;
+                gap: var(--space-3);
+                align-items: center;
+            }
+
             input[type="range"] {
-                flex: 1;
-                accent-color: #7c62b3;
-                cursor: pointer;
-                height: 6px;
-                border-radius: 3px;
+                width: 100%;
+                appearance: none;
+                height: 5px;
+                border-radius: 999px;
+                background: color-mix(in srgb, var(--accent) 45%, var(--surface-3));
+                outline: none;
             }
+
+            input[type="range"]::-webkit-slider-thumb {
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: var(--surface);
+                border: 4px solid var(--accent);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+            }
+
             .range-val {
+                color: var(--text);
                 font-size: 13px;
-                font-weight: bold;
-                color: #4ade80;
+                font-weight: 600;
+                text-align: right;
             }
+
             .checkbox-container {
+                height: 42px;
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-2);
+                color: var(--text-2);
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            .checkbox-container input {
+                width: 17px;
+                height: 17px;
+                accent-color: var(--accent);
+            }
+
+            .output-panel {
+                padding: 0;
+                background: transparent;
+            }
+
+            .output-panel.active-output {
+                display: block;
+            }
+
+            .output-panel:not(.active-output) {
+                display: none;
+            }
+
+            /* ── Right panel (third column, mirrors sidebar card) ── */
+            .right-panel {
+                min-height: 0;
+                border-radius: var(--radius-xl);
+                background: var(--surface);
+                box-shadow: var(--shadow);
+                padding: var(--space-6);
+                border: 1px solid var(--border);
+                overflow-y: auto;
+                scrollbar-width: none;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .right-panel::-webkit-scrollbar {
+                display: none;
+            }
+
+            .output-panel h2 {
+                font-size: 20px;
+                line-height: 1.25;
+                font-weight: 650;
+                letter-spacing: -0.01em;
+            }
+
+            .output-preview {
+                margin-top: var(--space-5);
+                border-radius: var(--radius-lg);
+                background: var(--surface-2);
+                padding: var(--space-5);
+                min-height: 190px;
+                display: grid;
+                align-content: space-between;
+                gap: var(--space-5);
+                box-shadow: var(--field-shadow);
+            }
+
+            .output-thumb {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                border-radius: 16px;
+                background:
+                    linear-gradient(135deg, var(--accent-2-soft), transparent),
+                    var(--surface-2);
+                display: grid;
+                place-items: center;
+                color: var(--text);
+            }
+
+            .output-name {
+                margin-top: var(--space-4);
+                font-size: 17px;
+                line-height: 1.3;
+                font-weight: 600;
+                word-break: break-word;
+            }
+
+            .output-status {
+                margin-top: var(--space-2);
+                color: var(--text-2);
+                font-size: 13px;
+                line-height: 1.55;
+                font-weight: 400;
+            }
+
+            .output-stats {
+                display: grid;
+                gap: 0;
+            }
+
+            .output-stat {
+                min-height: 36px;
                 display: flex;
                 align-items: center;
-                gap: 10px;
-                font-size: 13px;
-                color: #b3b3b3;
-                cursor: pointer;
-                margin-top: 4px;
+                justify-content: space-between;
+                gap: var(--space-3);
+                border-top: 1px solid var(--border);
+                color: var(--text-2);
+                font-size: 12px;
+                font-weight: 500;
             }
-            .checkbox-container input {
-                accent-color: #4ade80;
-                width: 16px;
-                height: 16px;
+
+            .output-stat strong {
+                color: var(--text);
+                font-weight: 500;
+            }
+
+            .output-actions {
+                margin-top: var(--space-5);
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .action-btn,
+            .action-main-btn {
+                height: 42px;
+                border-radius: var(--radius-md);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--space-2);
+                cursor: pointer;
+                text-decoration: none;
+                white-space: nowrap;
+                font-size: 14px;
+                font-weight: 600;
+                transition:
+                    background-color 120ms var(--ease),
+                    color 120ms var(--ease),
+                    transform 120ms var(--ease),
+                    opacity 120ms var(--ease);
+            }
+
+            .action-btn {
+                background: var(--surface);
+                color: var(--text);
+                box-shadow: var(--field-shadow);
+            }
+
+            .action-btn:hover {
+                background: var(--hover);
+            }
+
+            .action-main-btn {
+                width: 100%;
+                background: var(--accent);
+                color: white;
+                margin-top: var(--space-6);
+            }
+
+            .action-main-btn:hover:not(:disabled),
+            .action-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .action-main-btn:active:not(:disabled),
+            .action-btn:active {
+                transform: translateY(0);
+            }
+
+            .action-main-btn:disabled {
+                cursor: not-allowed;
+                opacity: 0.44;
+            }
+
+            .action-btn:disabled,
+            .action-btn[aria-disabled="true"] {
+                cursor: not-allowed;
+                opacity: 0.48;
+                transform: none;
+            }
+
+            .button-icon,
+            .brand-mark svg,
+            .nav-item svg,
+            .step-marker svg,
+            .upload-icon svg,
+            .thumb svg,
+            .output-thumb svg,
+            .theme-option svg {
+                width: 18px;
+                height: 18px;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+                flex: 0 0 auto;
+            }
+
+            .brand-mark svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            input[type="file"] {
+                display: none;
+            }
+
+            @keyframes menuIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-4px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeSlideIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0);    }
+            }
+
+            @keyframes pulseBar {
+                0%, 100% { opacity: 1; }
+                50%       { opacity: 0.72; }
+            }
+
+            @keyframes spinnerRing {
+                to { transform: rotate(360deg); }
+            }
+
+            /* ── Encoder status card ── */
+            .encoder-card {
+                display: none;
+                flex-direction: column;
+                gap: var(--space-5);
+                animation: fadeSlideIn 280ms var(--ease);
+            }
+
+            .output-panel[data-conv-state="encoding"] .output-preview,
+            .output-panel[data-conv-state="encoding"] .output-actions {
+                display: none;
+            }
+
+            .output-panel[data-conv-state="encoding"] .encoder-card {
+                display: flex;
+            }
+
+            .output-panel[data-conv-state="done"] .output-preview,
+            .output-panel[data-conv-state="done"] .output-actions {
+                display: none;
+            }
+
+            .output-panel[data-conv-state="done"] .encoder-card {
+                display: flex;
+            }
+
+            .enc-file-row {
+                display: flex;
+                align-items: center;
+                gap: var(--space-3);
+            }
+
+            .enc-file-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: var(--accent-soft);
+                display: grid;
+                place-items: center;
+                color: var(--accent);
+                flex: 0 0 auto;
+            }
+
+            .enc-file-icon svg {
+                width: 18px;
+                height: 18px;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+            }
+
+            .enc-filename {
+                font-size: 14px;
+                font-weight: 600;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0;
+                flex: 1;
+            }
+
+            .enc-progress-wrap {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+
+            .enc-progress-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .enc-stage {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-2);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .enc-stage::before {
+                content: "";
+                display: block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--accent);
+                animation: pulseBar 1.4s ease-in-out infinite;
+            }
+
+            .enc-pct {
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--text);
+            }
+
+            .enc-bar-track {
+                height: 7px;
+                border-radius: 999px;
+                background: var(--surface-3);
+                overflow: hidden;
+            }
+
+            .enc-bar-fill {
+                height: 100%;
+                border-radius: 999px;
+                background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--accent-2)));
+                width: 0%;
+                transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+            }
+
+            .enc-divider {
+                height: 1px;
+                background: var(--border);
+            }
+
+            .enc-stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0;
+            }
+
+            .enc-stat {
+                padding: 8px 0;
+                border-top: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .enc-stat-label {
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--text-3);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+
+            .enc-stat-value {
+                font-size: 15px;
+                font-weight: 650;
+                color: var(--text);
+                font-variant-numeric: tabular-nums;
+            }
+
+            .enc-cancel-btn {
+                width: 100%;
+                height: 40px;
+                border-radius: var(--radius-md);
+                background: transparent;
+                border: 1px solid var(--border-strong);
+                color: var(--danger);
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--space-2);
+                transition:
+                    background-color 120ms var(--ease),
+                    border-color 120ms var(--ease),
+                    transform 120ms var(--ease);
+            }
+
+            .enc-cancel-btn:hover {
+                background: color-mix(in srgb, var(--danger) 10%, transparent);
+                border-color: var(--danger);
+                transform: translateY(-1px);
+            }
+
+            .enc-cancel-btn:active {
+                transform: translateY(0);
+            }
+
+            /* ── Completion card ── */
+            .done-card {
+                display: none;
+                flex-direction: column;
+                gap: var(--space-5);
+                animation: fadeSlideIn 320ms var(--ease);
+            }
+
+            .output-panel[data-conv-state="done"] .enc-progress-wrap,
+            .output-panel[data-conv-state="done"] .enc-file-row,
+            .output-panel[data-conv-state="done"] .enc-stats-grid,
+            .output-panel[data-conv-state="done"] .enc-divider,
+            .output-panel[data-conv-state="done"] .enc-cancel-btn {
+                display: none;
+            }
+
+            .output-panel[data-conv-state="done"] .done-card {
+                display: flex;
+            }
+
+            .done-hero {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: var(--space-3);
+                padding: var(--space-4) 0;
+                text-align: center;
+            }
+
+            .done-emoji {
+                font-size: 36px;
+                line-height: 1;
+            }
+
+            .done-title {
+                font-size: 17px;
+                font-weight: 700;
+                color: var(--text);
+            }
+
+            .done-subtitle {
+                font-size: 12px;
+                font-weight: 400;
+                color: var(--text-2);
+            }
+
+            .done-size-flow {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .done-size-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                padding: 8px var(--space-4);
+                border-radius: var(--radius-md);
+                background: var(--surface);
+                box-shadow: var(--field-shadow);
+            }
+
+            .done-size-label {
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--text-3);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+
+            .done-size-val {
+                font-size: 14px;
+                font-weight: 650;
+                color: var(--text);
+                font-variant-numeric: tabular-nums;
+            }
+
+            .done-arrow {
+                font-size: 16px;
+                color: var(--success);
+                font-weight: 700;
+            }
+
+            .done-savings-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 10px;
+                border-radius: 999px;
+                background: color-mix(in srgb, var(--success) 14%, transparent);
+                color: var(--success);
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .done-time-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-top: var(--space-2);
+                border-top: 1px solid var(--border);
+            }
+
+            .done-time-label {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--text-3);
+            }
+
+            .done-time-val {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text);
+            }
+
+            .done-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: var(--space-2);
+            }
+
+            .done-actions .action-btn {
+                font-size: 13px;
+            }
+
+            .done-again-btn {
+                grid-column: 1 / -1;
+                height: 40px;
+                border-radius: var(--radius-md);
+                background: var(--accent);
+                color: white;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                border: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--space-2);
+                transition:
+                    background-color 120ms var(--ease),
+                    transform 120ms var(--ease);
+            }
+
+            .done-again-btn:hover {
+                background: color-mix(in srgb, var(--accent) 85%, white);
+                transform: translateY(-1px);
+            }
+
+            .done-again-btn:active {
+                transform: translateY(0);
+            }
+
+            /* error state inside encoder card */
+            .enc-error-box {
+                display: none;
+                padding: var(--space-4);
+                border-radius: var(--radius-md);
+                background: color-mix(in srgb, var(--danger) 10%, transparent);
+                border: 1px solid color-mix(in srgb, var(--danger) 28%, transparent);
+                color: var(--danger);
+                font-size: 12px;
+                font-weight: 500;
+                line-height: 1.55;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+
+            .output-panel[data-conv-state="error"] .enc-error-box {
+                display: block;
+            }
+
+            .output-panel[data-conv-state="error"] .enc-bar-fill {
+                background: var(--danger);
+                box-shadow: none;
+            }
+
+            .output-panel[data-conv-state="error"] .enc-stage::before {
+                background: var(--danger);
+                animation: none;
+            }
+
+            @media (max-width: 1120px) {
+                body {
+                    min-width: 0;
+                }
+
+                .app-shell {
+                    grid-template-columns: 76px minmax(0, 1fr) 300px;
+                    padding: var(--space-4);
+                    gap: var(--space-4);
+                }
+
+                .sidebar {
+                    padding: var(--space-4) var(--space-3);
+                    align-items: center;
+                }
+
+                .brand {
+                    justify-content: center;
+                    padding-bottom: var(--space-5);
+                }
+
+                .brand-text,
+                .nav-item span,
+                .theme-label,
+                .version {
+                    display: none;
+                }
+
+                .nav-item {
+                    width: 44px;
+                    padding: 0;
+                    justify-content: center;
+                }
+
+                .theme-toggle {
+                    grid-template-columns: 1fr;
+                    gap: 3px;
+                }
+
+                .theme-toggle::before {
+                    display: none;
+                }
+
+                .theme-option {
+                    width: 42px;
+                }
+
+                .theme-option span {
+                    display: none;
+                }
+            }
+
+            /* Web-only fallback — Tauri minWidth prevents reaching this */
+            @media (max-width: 959px) {
+                .app-shell {
+                    grid-template-columns: 76px minmax(0, 1fr) 0;
+                    gap: var(--space-4);
+                }
+
+                .right-panel {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 760px) {
+                .app-shell {
+                    height: auto;
+                    min-height: 100vh;
+                    grid-template-columns: 1fr;
+                }
+
+                body {
+                    overflow: auto;
+                }
+
+                .sidebar {
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+
+                .nav-list {
+                    grid-auto-flow: column;
+                }
+
+                .sidebar-footer {
+                    display: none;
+                }
+
+                .workspace {
+                    min-height: 860px;
+                }
+
+                .view-shell {
+                    padding: var(--space-6);
+                }
+
+                .workflow-step {
+                    grid-template-columns: 1fr;
+                }
+
+                .step-marker {
+                    display: none;
+                }
+
+                .file-preview,
+                .metadata-grid,
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 1ms !important;
+                    transition-duration: 1ms !important;
+                    scroll-behavior: auto !important;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="sidebar">
-            <div class="nav-item active" id="tab-convert">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"
-                    />
-                </svg>
-                Convert
-            </div>
-
-            <div class="nav-item" id="tab-compress">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0-2-.9-2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"
-                    />
-                </svg>
-                Compress
-            </div>
-
-            <div class="sidebar-indicator" id="sidebar-indicator"></div>
-        </div>
-
-        <div class="workspace">
-            <div class="panel-view active-view" id="panel-convert">
-                <div class="converter-container">
-                    <div class="file-card">
-                        <div class="file-icon">
-                            <span class="ext-text" id="conv-source-ext"
-                                >.---</span
-                            >
-                        </div>
-                        <div class="info-pill" id="conv-source-name">
-                            No File Selected
-                        </div>
-                        <label class="action-btn"
-                            >&#128206; Choose File<input
-                                type="file"
-                                id="conv-file-input"
-                        /></label>
-                    </div>
-                    <div class="direction-arrow">
-                        <svg viewBox="0 0 100 40" class="arrow-svg">
-                            <path
-                                d="M 10 30 Q 10 12 35 12 H 85 M 75 4 L 87 12 L 75 20"
-                                stroke="currentColor"
-                                stroke-width="3.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                fill="none"
-                            />
+        <div class="app-shell">
+            <aside class="sidebar" aria-label="Primary navigation">
+                <div class="brand">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 7h8" />
+                            <path d="m9 4 3 3-3 3" />
+                            <path d="M20 17h-8" />
+                            <path d="m15 14-3 3 3 3" />
                         </svg>
                     </div>
-                    <div class="file-card">
-                        <div class="file-icon">
-                            <span class="ext-text" id="conv-target-ext"
-                                >.---</span
-                            >
-                        </div>
-                        <div class="info-pill" id="conv-target-status">
-                            Converted_File | ..
-                        </div>
-                        <a
-                            id="conv-download-btn"
-                            class="action-btn"
-                            style="display: none"
-                            >&#128193; Downloads</a
-                        >
-                        <div
-                            class="dropdown-wrapper"
-                            id="conv-dropdown-wrapper"
-                        >
-                            <div
-                                class="dropdown-select-trigger"
-                                id="conv-dropdown-trigger"
-                            >
-                                Target Type ▾
-                            </div>
-                            <div
-                                class="dropdown-menu-panel"
-                                id="conv-dropdown-menu"
-                            >
-                                <input
-                                    type="text"
-                                    class="dropdown-search-input"
-                                    id="conv-search-box"
-                                    placeholder="Type format (e.g. mp4, mp3)..."
-                                />
-                                <div
-                                    class="dropdown-options-list"
-                                    id="conv-options-container"
-                                ></div>
-                            </div>
-                        </div>
+                    <div class="brand-text">
+                        <div class="brand-title">OpenConv</div>
+                        <div class="brand-subtitle">FFmpeg Studio</div>
                     </div>
                 </div>
-                <button class="action-main-btn" id="conv-submit-btn" disabled>
-                    Convert
-                </button>
-            </div>
 
-            <div class="panel-view" id="panel-compress">
-                <div class="compress-grid">
-                    <div class="file-card">
-                        <div class="file-icon">
-                            <span class="ext-text" id="comp-source-ext"
-                                >.---</span
-                            >
-                        </div>
-                        <div class="info-pill" id="comp-source-name">
-                            No File Selected
-                        </div>
-                        <label class="action-btn"
-                            >&#128206; Choose File<input
-                                type="file"
-                                id="comp-file-input"
-                        /></label>
-                        <a
-                            id="comp-download-btn"
-                            class="action-btn"
-                            style="display: none; margin-top: 10px"
-                            >&#128193; Downloads</a
-                        >
-                    </div>
-                    <div class="direction-arrow">
-                        <svg viewBox="0 0 100 40" class="arrow-svg">
-                            <path
-                                d="M 10 30 Q 10 12 35 12 H 85 M 75 4 L 87 12 L 75 20"
-                                stroke="currentColor"
-                                stroke-width="3.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                fill="none"
-                            />
+                <nav class="nav-list">
+                    <button class="nav-item active" id="tab-convert" type="button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 7h11" />
+                            <path d="m12 4 3 3-3 3" />
+                            <path d="M20 17H9" />
+                            <path d="m12 14-3 3 3 3" />
                         </svg>
+                        <span>Convert</span>
+                    </button>
+                    <button class="nav-item" id="tab-compress" type="button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M8 3v4a1 1 0 0 1-1 1H3" />
+                            <path d="M21 8h-4a1 1 0 0 1-1-1V3" />
+                            <path d="M3 16h4a1 1 0 0 1 1 1v4" />
+                            <path d="M16 21v-4a1 1 0 0 1 1-1h4" />
+                        </svg>
+                        <span>Compress</span>
+                    </button>
+                    <button class="nav-item" type="button" aria-disabled="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 6h16" />
+                            <path d="M4 12h16" />
+                            <path d="M4 18h16" />
+                        </svg>
+                        <span>Queue</span>
+                    </button>
+                    <button class="nav-item" type="button" aria-disabled="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 12a9 9 0 1 0 9-9" />
+                            <path d="M3 3v6h6" />
+                            <path d="M12 7v5l3 2" />
+                        </svg>
+                        <span>History</span>
+                    </button>
+                    <button class="nav-item" type="button" aria-disabled="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.72l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span>Settings</span>
+                    </button>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="theme-label">Theme</div>
+                    <div class="theme-toggle" id="theme-toggle" aria-label="Theme">
+                        <button class="theme-option" type="button" data-theme-choice="light">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="4" />
+                                <path d="M12 2v2" />
+                                <path d="M12 20v2" />
+                                <path d="m4.93 4.93 1.41 1.41" />
+                                <path d="m17.66 17.66 1.41 1.41" />
+                                <path d="M2 12h2" />
+                                <path d="M20 12h2" />
+                                <path d="m6.34 17.66-1.41 1.41" />
+                                <path d="m19.07 4.93-1.41 1.41" />
+                            </svg>
+                            <span>Light</span>
+                        </button>
+                        <button class="theme-option active" type="button" data-theme-choice="dark">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M20.99 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 20.99 12.79Z" />
+                            </svg>
+                            <span>Dark</span>
+                        </button>
+                        <button class="theme-option" type="button" data-theme-choice="system">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="3" y="4" width="18" height="12" rx="2" />
+                                <path d="M8 20h8" />
+                                <path d="M12 16v4" />
+                            </svg>
+                            <span>System</span>
+                        </button>
                     </div>
-                    <div class="settings-column">
-                        <div class="settings-group">
-                            <h3>Video Options</h3>
-                            <label
-                                >Constant Rate Factor (CRF)
-                                <span class="range-val" id="comp-crf-val"
-                                    >23</span
-                                ></label
-                            >
-                            <div class="range-container">
-                                <input
-                                    type="range"
-                                    id="comp-video-crf"
-                                    min="18"
-                                    max="32"
-                                    value="23"
-                                />
-                            </div>
-                            <label style="margin-top: 5px"
-                                >Max Resolution Constraint</label
-                            >
-                            <select class="control-input" id="comp-video-res">
-                                <option value="auto" selected>
-                                    Auto (No Change)
-                                </option>
-                                <option value="1920">
-                                    Max 1080p (Full HD)
-                                </option>
-                                <option value="1280">Max 720p (HD)</option>
-                                <option value="854">Max 480p (SD)</option>
-                            </select>
-                        </div>
-                        <div class="settings-group">
-                            <h3>Audio Options</h3>
-                            <label>Target Audio Bitrate</label>
-                            <select
-                                class="control-input"
-                                id="comp-audio-bitrate"
-                            >
-                                <option value="copy">
-                                    Keep Original Track (Fastest)
-                                </option>
-                                <option value="320k">320 kbps</option>
-                                <option value="128k" selected>
-                                    128 kbps (Standard)
-                                </option>
-                                <option value="64k">
-                                    64 kbps (Mono Voice)
-                                </option>
-                            </select>
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="comp-audio-mono" />
-                                Downmix Track to Mono
-                            </label>
-                        </div>
-                    </div>
+                    <div class="version">Version 1.0.0</div>
                 </div>
-                <button class="action-main-btn" id="comp-submit-btn" disabled>
-                    Compress
-                </button>
-            </div>
+            </aside>
+
+            <main class="workspace">
+                <section class="panel-view active-view" id="panel-convert">
+                    <div class="view-shell">
+                        <div class="content-main">
+                            <header class="view-header">
+                                <div class="view-kicker">Convert</div>
+                                <h1>Convert media without getting in the way.</h1>
+                                <p>
+                                    Select a source, choose a target format, and
+                                    let FFmpeg write the finished file locally.
+                                </p>
+                            </header>
+
+                            <div class="workflow">
+                                <article class="workflow-step">
+                                    <div class="step-marker" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <path d="M17 8 12 3 7 8" />
+                                            <path d="M12 3v12" />
+                                        </svg>
+                                    </div>
+                                    <div class="workflow-card">
+                                        <div class="card-heading">
+                                            <h2>Input</h2>
+                                            <span>Source file</span>
+                                        </div>
+                                        <label class="upload-card" id="conv-upload-card">
+                                            <input type="file" id="conv-file-input" />
+                                            <div class="upload-empty">
+                                                <div class="upload-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <path d="M17 8 12 3 7 8" />
+                                                        <path d="M12 3v12" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="upload-title">Drop media here <span class="browse-text">or browse</span></div>
+                                                    <div class="upload-description">
+                                                        Video, audio, and image formats supported.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="file-preview">
+                                                <div class="thumb" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                                        <path d="m10 9 5 3-5 3Z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="file-title-row">
+                                                        <div class="file-name" id="conv-source-name">No file selected</div>
+                                                        <div class="file-ext" id="conv-source-ext">---</div>
+                                                    </div>
+                                                    <div class="metadata-grid">
+                                                        <div class="meta-row"><span>Size</span><strong id="conv-source-size">Waiting</strong></div>
+                                                        <div class="meta-row"><span>Duration</span><strong id="conv-source-duration">Auto</strong></div>
+                                                        <div class="meta-row"><span>Resolution</span><strong id="conv-source-resolution">Original</strong></div>
+                                                        <div class="meta-row"><span>Codec</span><strong id="conv-source-codec">Source</strong></div>
+                                                        <div class="meta-row"><span>FPS</span><strong id="conv-source-fps">Source</strong></div>
+                                                        <div class="meta-row"><span>Audio</span><strong id="conv-source-audio">Source</strong></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </article>
+
+                                <article class="workflow-step">
+                                    <div class="step-marker" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M4 14h6" />
+                                            <path d="M14 10h6" />
+                                            <path d="M4 18h10" />
+                                            <path d="M10 6h10" />
+                                            <circle cx="12" cy="14" r="2" />
+                                            <circle cx="8" cy="6" r="2" />
+                                        </svg>
+                                    </div>
+                                    <div class="workflow-card">
+                                        <div class="card-heading">
+                                            <h2>Settings</h2>
+                                            <span>Output target</span>
+                                        </div>
+                                        <div class="settings-layout">
+                                            <section class="settings-section">
+                                                <h3>Format</h3>
+                                                <div class="form-grid">
+                                                    <div class="field full">
+                                                        <label for="conv-dropdown-trigger">Target type</label>
+                                                        <div class="dropdown-wrapper" id="conv-dropdown-wrapper">
+                                                            <div class="select-like" id="conv-dropdown-trigger" tabindex="0">
+                                                                Target Type
+                                                            </div>
+                                                            <div class="dropdown-menu-panel" id="conv-dropdown-menu">
+                                                                <input
+                                                                    type="text"
+                                                                    class="dropdown-search-input"
+                                                                    id="conv-search-box"
+                                                                    placeholder="Search mp4, mp3, gif..."
+                                                                />
+                                                                <div class="dropdown-options-list" id="conv-options-container"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="settings-section">
+                                                <h3>Video</h3>
+                                                <div class="form-grid">
+                                                    <div class="field">
+                                                        <label for="conv-video-codec">Codec</label>
+                                                        <select class="control-input" id="conv-video-codec">
+                                                            <option value="libx264" selected>H.264</option>
+                                                            <option value="libx265">H.265</option>
+                                                            <option value="libvpx-vp9">VP9</option>
+                                                            <option value="av1">AV1</option>
+                                                            <option value="copy">Copy</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-resolution">Resolution</label>
+                                                        <select class="control-input" id="conv-resolution">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="720p">720p</option>
+                                                            <option value="1080p">1080p</option>
+                                                            <option value="1440p">1440p</option>
+                                                            <option value="2160p">2160p</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-frame-rate">FPS</label>
+                                                        <select class="control-input" id="conv-frame-rate">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="24">24</option>
+                                                            <option value="30">30</option>
+                                                            <option value="60">60</option>
+                                                            <option value="120">120</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-preset">Preset</label>
+                                                        <select class="control-input" id="conv-preset">
+                                                            <option value="ultrafast">Ultrafast</option>
+                                                            <option value="superfast">Superfast</option>
+                                                            <option value="veryfast">Veryfast</option>
+                                                            <option value="faster">Faster</option>
+                                                            <option value="fast">Fast</option>
+                                                            <option value="medium" selected>Medium</option>
+                                                            <option value="slow">Slow</option>
+                                                            <option value="slower">Slower</option>
+                                                            <option value="veryslow">Veryslow</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="settings-section">
+                                                <h3>Audio</h3>
+                                                <div class="form-grid">
+                                                    <div class="field">
+                                                        <label for="conv-audio-codec">Codec</label>
+                                                        <select class="control-input" id="conv-audio-codec">
+                                                            <option value="aac" selected>AAC</option>
+                                                            <option value="mp3">MP3</option>
+                                                            <option value="opus">Opus</option>
+                                                            <option value="flac">FLAC</option>
+                                                            <option value="copy">Copy</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-audio-bitrate">Bitrate</label>
+                                                        <select class="control-input" id="conv-audio-bitrate">
+                                                            <option value="">Auto</option>
+                                                            <option value="64k">64 kbps</option>
+                                                            <option value="96k">96 kbps</option>
+                                                            <option value="128k" selected>128 kbps</option>
+                                                            <option value="192k">192 kbps</option>
+                                                            <option value="256k">256 kbps</option>
+                                                            <option value="320k">320 kbps</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-channels">Channels</label>
+                                                        <select class="control-input" id="conv-channels">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="mono">Mono</option>
+                                                            <option value="stereo">Stereo</option>
+                                                            <option value="surround51">5.1</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="conv-sample-rate">Sample rate</label>
+                                                        <select class="control-input" id="conv-sample-rate">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="22050">22050 Hz</option>
+                                                            <option value="44100">44100 Hz</option>
+                                                            <option value="48000">48000 Hz</option>
+                                                            <option value="96000">96000 Hz</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="settings-section">
+                                                <h3>Advanced</h3>
+                                                <div class="form-grid">
+                                                    <label class="inline-toggle">
+                                                        <input type="checkbox" id="conv-overwrite" />
+                                                        Overwrite existing files
+                                                    </label>
+                                                    <label class="inline-toggle">
+                                                        <input type="checkbox" id="conv-hardware-accel" />
+                                                        Hardware acceleration
+                                                    </label>
+                                                    <div class="field full">
+                                                        <textarea class="control-input" id="conv-extra-args" placeholder="Extra FFmpeg arguments" aria-label="Extra FFmpeg arguments"></textarea>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <button class="action-main-btn" id="conv-submit-btn" disabled>
+                                            Convert
+                                        </button>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel-view" id="panel-compress">
+                    <div class="view-shell">
+                        <div class="content-main">
+                            <header class="view-header">
+                                <div class="view-kicker">Compress</div>
+                                <h1>Make files smaller with calm controls.</h1>
+                                <p>
+                                    Tune compression settings without leaving the
+                                    simple local workflow.
+                                </p>
+                            </header>
+
+                            <div class="workflow">
+                                <article class="workflow-step">
+                                    <div class="step-marker" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <path d="M17 8 12 3 7 8" />
+                                            <path d="M12 3v12" />
+                                        </svg>
+                                    </div>
+                                    <div class="workflow-card">
+                                        <div class="card-heading">
+                                            <h2>Input</h2>
+                                            <span>Source file</span>
+                                        </div>
+                                        <label class="upload-card" id="comp-upload-card">
+                                            <input type="file" id="comp-file-input" />
+                                            <div class="upload-empty">
+                                                <div class="upload-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <path d="M17 8 12 3 7 8" />
+                                                        <path d="M12 3v12" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="upload-title">Drop media here <span class="browse-text">or browse</span></div>
+                                                    <div class="upload-description">
+                                                        Choose video or audio to compress locally.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="file-preview">
+                                                <div class="thumb" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                                        <path d="m10 9 5 3-5 3Z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="file-title-row">
+                                                        <div class="file-name" id="comp-source-name">No file selected</div>
+                                                        <div class="file-ext" id="comp-source-ext">---</div>
+                                                    </div>
+                                                    <div class="metadata-grid">
+                                                        <div class="meta-row"><span>Size</span><strong id="comp-source-size">Waiting</strong></div>
+                                                        <div class="meta-row"><span>Duration</span><strong id="comp-source-duration">Auto</strong></div>
+                                                        <div class="meta-row"><span>Resolution</span><strong id="comp-source-resolution">Original</strong></div>
+                                                        <div class="meta-row"><span>Codec</span><strong id="comp-source-codec">Source</strong></div>
+                                                        <div class="meta-row"><span>FPS</span><strong id="comp-source-fps">Source</strong></div>
+                                                        <div class="meta-row"><span>Audio</span><strong id="comp-source-audio">Source</strong></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </article>
+
+                                <article class="workflow-step">
+                                    <div class="step-marker" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M4 14h6" />
+                                            <path d="M14 10h6" />
+                                            <path d="M4 18h10" />
+                                            <path d="M10 6h10" />
+                                            <circle cx="12" cy="14" r="2" />
+                                            <circle cx="8" cy="6" r="2" />
+                                        </svg>
+                                    </div>
+                                    <div class="workflow-card">
+                                        <div class="card-heading">
+                                            <h2>Settings</h2>
+                                            <span>Compression</span>
+                                        </div>
+                                        <div class="settings-layout">
+                                            <section class="settings-section">
+                                                <h3>Video</h3>
+                                                <div class="form-grid">
+                                                    <div class="field">
+                                                        <label for="comp-video-codec">Codec</label>
+                                                        <select class="control-input" id="comp-video-codec">
+                                                            <option value="libx264" selected>H.264</option>
+                                                            <option value="libx265">H.265</option>
+                                                            <option value="libvpx-vp9">VP9</option>
+                                                            <option value="av1">AV1</option>
+                                                            <option value="copy">Copy</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="comp-video-res">Resolution</label>
+                                                        <select class="control-input" id="comp-video-res">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="720p">720p</option>
+                                                            <option value="1080p">1080p</option>
+                                                            <option value="1440p">1440p</option>
+                                                            <option value="2160p">2160p</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="comp-frame-rate">FPS</label>
+                                                        <select class="control-input" id="comp-frame-rate">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="24">24</option>
+                                                            <option value="30">30</option>
+                                                            <option value="60">60</option>
+                                                            <option value="120">120</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="comp-preset">Preset</label>
+                                                        <select class="control-input" id="comp-preset">
+                                                            <option value="ultrafast">Ultrafast</option>
+                                                            <option value="superfast">Superfast</option>
+                                                            <option value="veryfast">Veryfast</option>
+                                                            <option value="faster">Faster</option>
+                                                            <option value="fast">Fast</option>
+                                                            <option value="medium" selected>Medium</option>
+                                                            <option value="slow">Slow</option>
+                                                            <option value="slower">Slower</option>
+                                                            <option value="veryslow">Veryslow</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field full">
+                                                        <div class="field-label">CRF <span class="range-val" id="comp-crf-val">23</span></div>
+                                                        <div class="slider-row">
+                                                            <input type="range" id="comp-video-crf" min="18" max="32" value="23" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="settings-section">
+                                                <h3>Audio</h3>
+                                                <div class="form-grid">
+                                                    <div class="field">
+                                                        <label for="comp-audio-codec">Codec</label>
+                                                        <select class="control-input" id="comp-audio-codec">
+                                                            <option value="aac" selected>AAC</option>
+                                                            <option value="mp3">MP3</option>
+                                                            <option value="opus">Opus</option>
+                                                            <option value="flac">FLAC</option>
+                                                            <option value="copy">Copy</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="comp-audio-bitrate">Bitrate</label>
+                                                        <select class="control-input" id="comp-audio-bitrate">
+                                                            <option value="">Auto</option>
+                                                            <option value="64k">64 kbps</option>
+                                                            <option value="96k">96 kbps</option>
+                                                            <option value="128k" selected>128 kbps</option>
+                                                            <option value="192k">192 kbps</option>
+                                                            <option value="256k">256 kbps</option>
+                                                            <option value="320k">320 kbps</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label for="comp-sample-rate">Sample rate</label>
+                                                        <select class="control-input" id="comp-sample-rate">
+                                                            <option value="source" selected>Keep source</option>
+                                                            <option value="22050">22050 Hz</option>
+                                                            <option value="44100">44100 Hz</option>
+                                                            <option value="48000">48000 Hz</option>
+                                                            <option value="96000">96000 Hz</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label class="checkbox-container">
+                                                            <input type="checkbox" id="comp-audio-mono" />
+                                                            Mono channels
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section class="settings-section">
+                                                <h3>Advanced</h3>
+                                                <div class="form-grid">
+                                                    <label class="inline-toggle">
+                                                        <input type="checkbox" id="comp-overwrite" />
+                                                        Overwrite existing files
+                                                    </label>
+                                                    <label class="inline-toggle">
+                                                        <input type="checkbox" id="comp-hardware-accel" />
+                                                        Hardware acceleration
+                                                    </label>
+                                                    <div class="field full">
+                                                        <textarea class="control-input" id="comp-extra-args" placeholder="Extra FFmpeg arguments" aria-label="Extra FFmpeg arguments"></textarea>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <button class="action-main-btn" id="comp-submit-btn" disabled>
+                                            Compress
+                                        </button>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            <aside class="right-panel" id="right-panel">
+                <aside class="output-panel active-output" id="conv-output-panel">
+                            <h2>Output preview</h2>
+
+                            <!-- Default idle state -->
+                            <div class="output-preview">
+                                <div>
+                                    <div class="output-thumb" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                        </svg>
+                                    </div>
+                                    <div class="output-name" id="conv-target-ext">Choose format</div>
+                                    <div class="output-status" id="conv-target-status">
+                                        Select a source file and target format to prepare conversion.
+                                    </div>
+                                </div>
+                                <div class="output-stats">
+                                    <div class="output-stat"><span>Progress</span><strong id="conv-progress">0%</strong></div>
+                                    <div class="output-stat"><span>Elapsed</span><strong id="conv-elapsed">00:00</strong></div>
+                                    <div class="output-stat"><span>Remaining</span><strong id="conv-remaining">--</strong></div>
+                                    <div class="output-stat"><span>FPS / Speed</span><strong id="conv-speed">--</strong></div>
+                                    <div class="output-stat"><span>Size / Bitrate</span><strong id="conv-size">After run</strong></div>
+                                    <div class="output-stat"><span>Save location</span><strong id="conv-save-location">Choose on convert</strong></div>
+                                </div>
+                            </div>
+                            <div class="output-actions">
+                                <a id="conv-download-btn" class="action-btn" style="display: none">
+                                    <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2" />
+                                        <path d="M7 11l5 5 5-5" />
+                                        <path d="M12 4v12" />
+                                    </svg>
+                                    Open Folder
+                                </a>
+                                <button class="action-btn" type="button" disabled>Open File</button>
+                            </div>
+
+                            <!-- Live encoder status card (shown during conversion) -->
+                            <div class="encoder-card" id="conv-encoder-card">
+                                <div class="enc-file-row">
+                                    <div class="enc-file-icon">
+                                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>
+                                    </div>
+                                    <div class="enc-filename" id="conv-enc-filename">—</div>
+                                </div>
+
+                                <div class="enc-progress-wrap">
+                                    <div class="enc-progress-header">
+                                        <span class="enc-stage" id="conv-enc-stage">Analyzing</span>
+                                        <span class="enc-pct" id="conv-enc-pct">0%</span>
+                                    </div>
+                                    <div class="enc-bar-track">
+                                        <div class="enc-bar-fill" id="conv-enc-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="enc-divider"></div>
+
+                                <div class="enc-stats-grid">
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Elapsed</div>
+                                        <div class="enc-stat-value" id="conv-enc-elapsed">00:00</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Remaining</div>
+                                        <div class="enc-stat-value" id="conv-enc-remaining">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Speed</div>
+                                        <div class="enc-stat-value" id="conv-enc-speed">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">FPS</div>
+                                        <div class="enc-stat-value" id="conv-enc-fps">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Bitrate</div>
+                                        <div class="enc-stat-value" id="conv-enc-bitrate">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Output Size</div>
+                                        <div class="enc-stat-value" id="conv-enc-size">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Encoder</div>
+                                        <div class="enc-stat-value" id="conv-enc-encoder">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">ETA</div>
+                                        <div class="enc-stat-value" id="conv-enc-eta">—</div>
+                                    </div>
+                                </div>
+
+                                <div class="enc-error-box" id="conv-enc-error"></div>
+
+                                <!-- Completion card (shown when done) -->
+                                <div class="done-card" id="conv-done-card">
+                                    <div class="done-hero">
+                                        <div class="done-emoji">✅</div>
+                                        <div class="done-title">Conversion Complete</div>
+                                        <div class="done-subtitle" id="conv-done-subtitle">Finished successfully</div>
+                                    </div>
+                                    <div class="done-size-flow">
+                                        <div class="done-size-row">
+                                            <span class="done-size-label">Original</span>
+                                            <span class="done-size-val" id="conv-done-orig">—</span>
+                                        </div>
+                                        <div class="done-arrow">↓</div>
+                                        <div class="done-size-row">
+                                            <span class="done-size-label">Output</span>
+                                            <span class="done-size-val" id="conv-done-out">—</span>
+                                        </div>
+                                        <div class="done-savings-badge" id="conv-done-savings" style="display:none">—</div>
+                                    </div>
+                                    <div class="done-time-row">
+                                        <span class="done-time-label">Time Taken</span>
+                                        <span class="done-time-val" id="conv-done-time">—</span>
+                                    </div>
+                                    <div class="done-actions">
+                                        <button class="action-btn" id="conv-done-folder">Open Folder</button>
+                                        <button class="action-btn" id="conv-done-file">Open File</button>
+                                        <button class="done-again-btn" id="conv-done-again">Convert Another</button>
+                                    </div>
+                                </div>
+
+                                <button class="enc-cancel-btn" id="conv-cancel-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                                    Cancel Conversion
+                                </button>
+                            </div>
+                </aside>
+                <aside class="output-panel" id="comp-output-panel">
+                            <h2>Output preview</h2>
+
+                            <!-- Default idle state -->
+                            <div class="output-preview">
+                                <div>
+                                    <div class="output-thumb" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                        </svg>
+                                    </div>
+                                    <div class="output-name">Optimized file</div>
+                                    <div class="output-status" id="comp-target-status">
+                                        Select a source file to prepare compression.
+                                    </div>
+                                </div>
+                                <div class="output-stats">
+                                    <div class="output-stat"><span>Progress</span><strong id="comp-progress">0%</strong></div>
+                                    <div class="output-stat"><span>Elapsed</span><strong id="comp-elapsed">00:00</strong></div>
+                                    <div class="output-stat"><span>Remaining</span><strong id="comp-remaining">--</strong></div>
+                                    <div class="output-stat"><span>FPS / Speed</span><strong id="comp-speed">--</strong></div>
+                                    <div class="output-stat"><span>Size / Bitrate</span><strong id="comp-size">After run</strong></div>
+                                    <div class="output-stat"><span>Save location</span><strong id="comp-save-location">Choose on compress</strong></div>
+                                </div>
+                            </div>
+                            <div class="output-actions">
+                                <a id="comp-download-btn" class="action-btn" style="display: none">
+                                    <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2" />
+                                        <path d="M7 11l5 5 5-5" />
+                                        <path d="M12 4v12" />
+                                    </svg>
+                                    Open Folder
+                                </a>
+                                <button class="action-btn" type="button" disabled>Open File</button>
+                            </div>
+
+                            <!-- Live encoder status card (shown during compression) -->
+                            <div class="encoder-card" id="comp-encoder-card">
+                                <div class="enc-file-row">
+                                    <div class="enc-file-icon">
+                                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>
+                                    </div>
+                                    <div class="enc-filename" id="comp-enc-filename">—</div>
+                                </div>
+
+                                <div class="enc-progress-wrap">
+                                    <div class="enc-progress-header">
+                                        <span class="enc-stage" id="comp-enc-stage">Analyzing</span>
+                                        <span class="enc-pct" id="comp-enc-pct">0%</span>
+                                    </div>
+                                    <div class="enc-bar-track">
+                                        <div class="enc-bar-fill" id="comp-enc-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="enc-divider"></div>
+
+                                <div class="enc-stats-grid">
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Elapsed</div>
+                                        <div class="enc-stat-value" id="comp-enc-elapsed">00:00</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Remaining</div>
+                                        <div class="enc-stat-value" id="comp-enc-remaining">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Speed</div>
+                                        <div class="enc-stat-value" id="comp-enc-speed">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">FPS</div>
+                                        <div class="enc-stat-value" id="comp-enc-fps">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Bitrate</div>
+                                        <div class="enc-stat-value" id="comp-enc-bitrate">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Output Size</div>
+                                        <div class="enc-stat-value" id="comp-enc-size">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">Encoder</div>
+                                        <div class="enc-stat-value" id="comp-enc-encoder">—</div>
+                                    </div>
+                                    <div class="enc-stat">
+                                        <div class="enc-stat-label">ETA</div>
+                                        <div class="enc-stat-value" id="comp-enc-eta">—</div>
+                                    </div>
+                                </div>
+
+                                <div class="enc-error-box" id="comp-enc-error"></div>
+
+                                <!-- Completion card (shown when done) -->
+                                <div class="done-card" id="comp-done-card">
+                                    <div class="done-hero">
+                                        <div class="done-emoji">✅</div>
+                                        <div class="done-title">Compression Complete</div>
+                                        <div class="done-subtitle" id="comp-done-subtitle">Finished successfully</div>
+                                    </div>
+                                    <div class="done-size-flow">
+                                        <div class="done-size-row">
+                                            <span class="done-size-label">Original</span>
+                                            <span class="done-size-val" id="comp-done-orig">—</span>
+                                        </div>
+                                        <div class="done-arrow">↓</div>
+                                        <div class="done-size-row">
+                                            <span class="done-size-label">Output</span>
+                                            <span class="done-size-val" id="comp-done-out">—</span>
+                                        </div>
+                                        <div class="done-savings-badge" id="comp-done-savings" style="display:none">—</div>
+                                    </div>
+                                    <div class="done-time-row">
+                                        <span class="done-time-label">Time Taken</span>
+                                        <span class="done-time-val" id="comp-done-time">—</span>
+                                    </div>
+                                    <div class="done-actions">
+                                        <button class="action-btn" id="comp-done-folder">Open Folder</button>
+                                        <button class="action-btn" id="comp-done-file">Open File</button>
+                                        <button class="done-again-btn" id="comp-done-again">Compress Another</button>
+                                    </div>
+                                </div>
+
+                                <button class="enc-cancel-btn" id="comp-cancel-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                                    Cancel Compression
+                                </button>
+                            </div>
+                </aside>
+            </aside>
         </div>
 
         <script>
-            const tabConvert = document.getElementById("tab-convert");
-            const tabCompress = document.getElementById("tab-compress");
-            const indicator = document.getElementById("sidebar-indicator");
-            const panelConvert = document.getElementById("panel-convert");
-            const panelCompress = document.getElementById("panel-compress");
-
-            tabConvert.addEventListener("click", () => {
-                tabCompress.classList.remove("active");
-                tabConvert.classList.add("active");
-
-                indicator.style.transform = "translateY(0px)";
-                indicator.style.backgroundColor = "#2e443a";
-
-                panelCompress.classList.remove("active-view");
-                panelConvert.classList.add("active-view");
-            });
-
-            tabCompress.addEventListener("click", () => {
-                tabConvert.classList.remove("active");
-                tabCompress.classList.add("active");
-
-                indicator.style.transform = "translateY(90px)";
-                indicator.style.backgroundColor = "#3b2e5c";
-
-                panelConvert.classList.remove("active-view");
-                panelCompress.classList.add("active-view");
-            });
-
+            const $ = (id) => document.getElementById(id);
+            const tabConvert = $("tab-convert");
+            const tabCompress = $("tab-compress");
+            const panelConvert = $("panel-convert");
+            const panelCompress = $("panel-compress");
+            const themeToggle = $("theme-toggle");
+            const themeOptions = Array.from(document.querySelectorAll(".theme-option"));
+            const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
             const isTauri = window.__TAURI__ != null;
             const invoke = isTauri ? window.__TAURI__.tauri.invoke : null;
             const openDialog = isTauri ? window.__TAURI__.dialog.open : null;
+            const listen = isTauri && window.__TAURI__.event ? window.__TAURI__.event.listen : null;
 
-            let convAbsoluteFilePath = null;
-            let compAbsoluteFilePath = null;
+            const FORMAT_PRESETS = {
+                mp4: { container: "mp4", videoCodec: "libx264", audioCodec: "aac", kind: "video", label: "MP4" },
+                mov: { container: "mov", videoCodec: "libx264", audioCodec: "aac", kind: "video", label: "MOV" },
+                mkv: { container: "matroska", videoCodec: "libx264", audioCodec: "aac", kind: "video", label: "MKV" },
+                avi: { container: "avi", videoCodec: "libx264", audioCodec: "aac", kind: "video", label: "AVI" },
+                webm: { container: "matroska", videoCodec: "libvpx-vp9", audioCodec: "opus", kind: "video", label: "WEBM" },
+                mp3: { container: "mp3", videoCodec: null, audioCodec: "mp3", kind: "audio", label: "MP3" },
+                wav: { container: "wav", videoCodec: null, audioCodec: "pcm", kind: "audio", label: "WAV" },
+                flac: { container: "flac", videoCodec: null, audioCodec: "flac", kind: "audio", label: "FLAC" },
+                aac: { container: "aac", videoCodec: null, audioCodec: "aac", kind: "audio", label: "AAC" },
+                m4a: { container: "aac", videoCodec: null, audioCodec: "aac", kind: "audio", label: "M4A" },
+                ogg: { container: "ogg", videoCodec: null, audioCodec: "opus", kind: "audio", label: "OGG" },
+                opus: { container: "opus", videoCodec: null, audioCodec: "opus", kind: "audio", label: "OPUS" },
+                png: { container: "png", videoCodec: null, audioCodec: null, kind: "image", label: "PNG" },
+                webp: { container: "webp", videoCodec: "libvpx-vp9", audioCodec: null, kind: "image", label: "WEBP" },
+                gif: { container: "gif", videoCodec: null, audioCodec: null, kind: "image", label: "GIF" },
+            };
 
-            const convFileInput = document.getElementById("conv-file-input");
-            const convSourceExt = document.getElementById("conv-source-ext");
-            const convSourceName = document.getElementById("conv-source-name");
-            const convDropdownTrigger = document.getElementById(
-                "conv-dropdown-trigger",
-            );
-            const convDropdownMenu =
-                document.getElementById("conv-dropdown-menu");
-            const convSearchBox = document.getElementById("conv-search-box");
-            const convOptionsContainer = document.getElementById(
-                "conv-options-container",
-            );
-            const convTargetExt = document.getElementById("conv-target-ext");
-            const convTargetStatus =
-                document.getElementById("conv-target-status");
-            const convSubmitBtn = document.getElementById("conv-submit-btn");
-            const convDownloadBtn =
-                document.getElementById("conv-download-btn");
+            const state = {
+                activeMode: "convert",
+                convert: createDefaultConfig(),
+                compress: {
+                    ...createDefaultConfig(),
+                    container: "mp4",
+                    videoCodec: "libx264",
+                    audioCodec: "aac",
+                    crf: 23,
+                    audioBitrate: "128k",
+                },
+            };
 
-            let chosenExtension = null,
-                convInputType = null;
+            const controls = {
+                convert: {
+                    uploadCard: $("conv-upload-card"),
+                    fileInput: $("conv-file-input"),
+                    sourceName: $("conv-source-name"),
+                    sourceExt: $("conv-source-ext"),
+                    sourceSize: $("conv-source-size"),
+                    sourceDuration: $("conv-source-duration"),
+                    sourceResolution: $("conv-source-resolution"),
+                    sourceCodec: $("conv-source-codec"),
+                    sourceFps: $("conv-source-fps"),
+                    sourceAudio: $("conv-source-audio"),
+                    targetName: $("conv-target-ext"),
+                    status: $("conv-target-status"),
+                    submit: $("conv-submit-btn"),
+                    download: $("conv-download-btn"),
+                    progress: $("conv-progress"),
+                    elapsed: $("conv-elapsed"),
+                    remaining: $("conv-remaining"),
+                    speed: $("conv-speed"),
+                    size: $("conv-size"),
+                    saveLocation: $("conv-save-location"),
+                    videoSection: panelConvert.querySelector(".settings-section:nth-of-type(2)"),
+                    audioSection: panelConvert.querySelector(".settings-section:nth-of-type(3)"),
+                },
+                compress: {
+                    uploadCard: $("comp-upload-card"),
+                    fileInput: $("comp-file-input"),
+                    sourceName: $("comp-source-name"),
+                    sourceExt: $("comp-source-ext"),
+                    sourceSize: $("comp-source-size"),
+                    sourceDuration: $("comp-source-duration"),
+                    sourceResolution: $("comp-source-resolution"),
+                    sourceCodec: $("comp-source-codec"),
+                    sourceFps: $("comp-source-fps"),
+                    sourceAudio: $("comp-source-audio"),
+                    targetName: null,
+                    status: $("comp-target-status"),
+                    submit: $("comp-submit-btn"),
+                    download: $("comp-download-btn"),
+                    progress: $("comp-progress"),
+                    elapsed: $("comp-elapsed"),
+                    remaining: $("comp-remaining"),
+                    speed: $("comp-speed"),
+                    size: $("comp-size"),
+                    saveLocation: $("comp-save-location"),
+                    videoSection: panelCompress.querySelector(".settings-section:nth-of-type(1)"),
+                    audioSection: panelCompress.querySelector(".settings-section:nth-of-type(2)"),
+                },
+            };
 
-            convDropdownTrigger.addEventListener("click", () => {
+            function createDefaultConfig() {
+                return {
+                    inputPath: "",
+                    outputPath: null,
+                    outputDir: null,
+                    container: null,
+                    videoCodec: "libx264",
+                    audioCodec: "aac",
+                    resolution: "source",
+                    frameRate: "source",
+                    preset: "medium",
+                    crf: 23,
+                    videoBitrate: null,
+                    audioBitrate: "128k",
+                    channels: "source",
+                    sampleRate: "source",
+                    hardwareAcceleration: "off",
+                    overwrite: false,
+                    extraArguments: "",
+                };
+            }
+
+            function applyTheme(choice) {
+                const selected = choice || localStorage.getItem("openconv-theme") || "dark";
+                const resolved = selected === "system" ? (themeMedia.matches ? "dark" : "light") : selected;
+                document.documentElement.dataset.theme = resolved;
+                localStorage.setItem("openconv-theme", selected);
+                themeOptions.forEach((button, index) => {
+                    const active = button.dataset.themeChoice === selected;
+                    button.classList.toggle("active", active);
+                    if (active) themeToggle.style.setProperty("--theme-index", index);
+                });
+            }
+
+            themeOptions.forEach((button) => button.addEventListener("click", () => applyTheme(button.dataset.themeChoice)));
+            themeMedia.addEventListener("change", () => {
+                if ((localStorage.getItem("openconv-theme") || "dark") === "system") applyTheme("system");
+            });
+            applyTheme(localStorage.getItem("openconv-theme") || "dark");
+
+            tabConvert.addEventListener("click", () => switchTab("convert"));
+            tabCompress.addEventListener("click", () => switchTab("compress"));
+
+            function switchTab(mode) {
+                state.activeMode = mode;
+                tabCompress.classList.toggle("active", mode === "compress");
+                tabConvert.classList.toggle("active", mode === "convert");
+                panelCompress.classList.toggle("active-view", mode === "compress");
+                panelConvert.classList.toggle("active-view", mode === "convert");
+                // Toggle which output panel is visible in the right rail
+                const convOut = $("conv-output-panel");
+                const compOut = $("comp-output-panel");
+                if (convOut) convOut.classList.toggle("active-output", mode === "convert");
+                if (compOut) compOut.classList.toggle("active-output", mode === "compress");
+            }
+
+            const convDropdownTrigger = $("conv-dropdown-trigger");
+            const convDropdownMenu = $("conv-dropdown-menu");
+            const convSearchBox = $("conv-search-box");
+            const convOptionsContainer = $("conv-options-container");
+            let convInputType = null;
+
+            convDropdownTrigger.addEventListener("click", () => toggleFormatMenu());
+            convDropdownTrigger.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleFormatMenu();
+                }
+            });
+
+            function toggleFormatMenu() {
                 const visible = convDropdownMenu.style.display === "flex";
                 if (visible) {
                     convDropdownMenu.style.display = "none";
-                } else {
-                    convDropdownMenu.style.display = "flex";
-                    convSearchBox.value = "";
-                    renderFormatsList();
-                    convSearchBox.focus();
-
-                    const rect = convDropdownTrigger.getBoundingClientRect();
-                    const spaceBelow = window.innerHeight - rect.bottom;
-                    if (spaceBelow < 240) {
-                        convDropdownMenu.style.top = "auto";
-                        convDropdownMenu.style.bottom = "100%";
-                        convDropdownMenu.style.marginBottom = "6px";
-                        convDropdownMenu.style.marginTop = "0px";
-                    } else {
-                        convDropdownMenu.style.bottom = "auto";
-                        convDropdownMenu.style.top = "100%";
-                        convDropdownMenu.style.marginTop = "6px";
-                        convDropdownMenu.style.marginBottom = "0px";
-                    }
+                    return;
                 }
-            });
+                convDropdownMenu.style.display = "flex";
+                convSearchBox.value = "";
+                renderFormatsList();
+                convSearchBox.focus();
+            }
 
             document.addEventListener("click", (e) => {
-                const wrapper = document.getElementById(
-                    "conv-dropdown-wrapper",
-                );
-                if (wrapper && !wrapper.contains(e.target)) {
-                    convDropdownMenu.style.display = "none";
-                }
+                const wrapper = $("conv-dropdown-wrapper");
+                if (wrapper && !wrapper.contains(e.target)) convDropdownMenu.style.display = "none";
             });
 
-            if (convFileInput && convFileInput.parentElement) {
-                if (isTauri) {
-                    convFileInput.parentElement.addEventListener(
-                        "click",
-                        async (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            const selectedFile = await openDialog({
-                                multiple: false,
-                                filters: [
-                                    {
-                                        name: "Media Files",
-                                        extensions: [
-                                            "mp4",
-                                            "mkv",
-                                            "avi",
-                                            "mov",
-                                            "mp3",
-                                            "wav",
-                                            "flac",
-                                            "png",
-                                            "jpg",
-                                            "jpeg",
-                                        ],
-                                    },
-                                ],
-                            });
-
-                            if (selectedFile) {
-                                handleConvFileSelection(
-                                    selectedFile,
-                                    selectedFile
-                                        .split("\\")
-                                        .pop()
-                                        .split("/")
-                                        .pop(),
-                                );
-                            }
-                        },
-                    );
-                } else {
-                    convFileInput.addEventListener("change", (e) => {
-                        if (e.target.files.length > 0) {
-                            const file = e.target.files[0];
-                            handleConvFileSelection(file.name, file.name);
-                        }
-                    });
-                }
-            }
-
-            function handleConvFileSelection(filePath, fileName) {
-                convAbsoluteFilePath = filePath;
-                const fileExt = "." + fileName.split(".").pop();
-
-                convSourceName.textContent = fileName;
-                convSourceExt.textContent = fileExt.toLowerCase();
-
-                const isAudio = [
-                    "mp3",
-                    "wav",
-                    "flac",
-                    "aac",
-                    "ogg",
-                    "m4a",
-                ].includes(fileExt.replace(".", "").toLowerCase());
-                convInputType = isAudio ? "audio" : "video";
-
-                chosenExtension = null;
-                convDropdownTrigger.textContent = "Target Type ▾";
-                convTargetExt.textContent = ".---";
-                convSubmitBtn.disabled = true;
-                if (convDownloadBtn) convDownloadBtn.style.display = "none";
-
-                const dropdownWrapper = document.getElementById(
-                    "conv-dropdown-wrapper",
-                );
-                if (dropdownWrapper) dropdownWrapper.style.display = "block";
-
-                convTargetStatus.textContent =
-                    "Ready to transcode local file stream asset";
-                renderFormatsList();
-            }
-
-            if (convSearchBox) {
-                convSearchBox.addEventListener("input", () =>
-                    renderFormatsList(convSearchBox.value.trim().toLowerCase()),
-                );
-            }
+            convSearchBox.addEventListener("input", () => renderFormatsList(convSearchBox.value.trim().toLowerCase()));
 
             function renderFormatsList(query = "") {
                 convOptionsContainer.innerHTML = "";
                 let pool = AVAILABLE_FORMATS;
-                if (convInputType === "audio")
-                    pool = pool.filter((f) => f.type === "audio");
+                if (convInputType === "audio") pool = pool.filter((format) => format.type === "audio");
 
-                let matches =
+                const matches =
                     query === ""
-                        ? pool.filter((f) => f.popular)
-                        : pool.filter(
-                              (f) =>
-                                  f.ext.includes(query) ||
-                                  f.name.toLowerCase().includes(query),
-                          );
+                        ? pool.filter((format) => format.popular)
+                        : pool.filter((format) => format.ext.includes(query) || format.name.toLowerCase().includes(query));
 
                 if (matches.length === 0) {
-                    convOptionsContainer.innerHTML =
-                        '<div class="dropdown-category-title" style="text-align:center;">❌ No matches found</div>';
+                    convOptionsContainer.innerHTML = '<div class="dropdown-category-title" style="text-align:center;">No matches found</div>';
                     return;
                 }
 
-                if (query === "") {
-                    const h = document.createElement("div");
-                    h.className = "dropdown-category-title";
-                    h.style.color = "#4ade80";
-                    h.textContent = " Popular Formats";
-                    convOptionsContainer.appendChild(h);
-                }
-
-                const video = matches.filter((f) => f.type === "video");
-                const audio = matches.filter((f) => f.type === "audio");
-                const image = matches.filter((f) => f.type === "image");
-
-                if (video.length > 0) {
-                    if (query !== "") appendHead(" Video");
-                    video.forEach((i) => appendRow(i));
-                }
-                if (audio.length > 0) {
-                    if (query !== "") appendHead(" Audio");
-                    audio.forEach((i) => appendRow(i));
-                }
-                if (image.length > 0) {
-                    if (query !== "") appendHead("Images");
-                    image.forEach((i) => appendRow(i));
-                }
+                if (query === "") appendHead("Popular formats");
+                ["video", "audio", "image"].forEach((type) => {
+                    const group = matches.filter((format) => format.type === type);
+                    if (group.length > 0) {
+                        if (query !== "") appendHead(type[0].toUpperCase() + type.slice(1));
+                        group.forEach((item) => appendRow(item));
+                    }
+                });
             }
 
-            function appendHead(txt) {
-                const h = document.createElement("div");
-                h.className = "dropdown-category-title";
-                h.textContent = txt;
-                convOptionsContainer.appendChild(h);
+            function appendHead(text) {
+                const heading = document.createElement("div");
+                heading.className = "dropdown-category-title";
+                heading.textContent = text;
+                convOptionsContainer.appendChild(heading);
             }
 
-            function appendRow(i) {
-                const r = document.createElement("div");
-                r.className = "dropdown-option-item";
-                r.textContent = i.name;
-                r.addEventListener("click", () => {
-                    chosenExtension = i.ext;
-                    convDropdownTrigger.textContent = i.ext.toUpperCase();
-                    convTargetExt.textContent = `.${i.ext}`;
+            function appendRow(item) {
+                const row = document.createElement("div");
+                row.className = "dropdown-option-item";
+                row.textContent = item.name;
+                row.addEventListener("click", () => {
+                    applyFormatPreset(item.ext);
                     convDropdownMenu.style.display = "none";
-                    convSubmitBtn.disabled = false;
                 });
-                convOptionsContainer.appendChild(r);
+                convOptionsContainer.appendChild(row);
             }
 
-            convSubmitBtn.addEventListener("click", async () => {
-                if (!convAbsoluteFilePath || !chosenExtension) return;
-
-                if (!isTauri) {
-                    alert(
-                        "This feature requires running inside the Tauri desktop app.",
-                    );
-                    return;
-                }
-
-                const targetFolderDirectory = await openDialog({
-                    directory: true,
-                    multiple: false,
-                    title: "Choose Destination Folder",
+            function applyFormatPreset(ext) {
+                const preset = FORMAT_PRESETS[ext] || FORMAT_PRESETS.mp4;
+                Object.assign(state.convert, {
+                    container: preset.container,
+                    videoCodec: preset.videoCodec,
+                    audioCodec: preset.audioCodec,
                 });
-
-                if (!targetFolderDirectory) return;
-
-                convSubmitBtn.textContent = "Processing...";
-                convSubmitBtn.disabled = true;
-                convTargetStatus.textContent =
-                    "Compiling vector codec targets...";
-
-                try {
-                    const successMessage = await invoke("run_conversion", {
-                        inputPath: convAbsoluteFilePath,
-                        targetDir: targetFolderDirectory,
-                        targetExt: chosenExtension,
-                    });
-
-                    convSubmitBtn.textContent = "Done!";
-                    convTargetStatus.textContent = "Conversion Complete!";
-                    alert(successMessage);
-                    convSubmitBtn.disabled = false;
-                    convSubmitBtn.textContent = "Convert";
-                } catch (err) {
-                    alert("Desktop Compilation Failure: " + err);
-                    resetConv();
-                }
-            });
-
-            function resetConv() {
-                convSubmitBtn.textContent = "Convert";
-                convSubmitBtn.disabled = false;
+                setSelect("conv-video-codec", preset.videoCodec || "libx264");
+                setSelect("conv-audio-codec", preset.audioCodec || "aac");
+                convDropdownTrigger.textContent = preset.label;
+                controls.convert.targetName.textContent = `.${ext}`;
+                controls.convert.status.textContent = `Output will be written as .${ext}.`;
+                syncConfigFromControls("convert");
+                updateRelevantSections("convert", preset.kind);
+                updateSubmitState("convert");
             }
 
-            const compFileInput = document.getElementById("comp-file-input");
-            const compSourceExt = document.getElementById("comp-source-ext");
-            const compSourceName = document.getElementById("comp-source-name");
-            const compVideoCrf = document.getElementById("comp-video-crf");
-            const compCrfVal = document.getElementById("comp-crf-val");
-            const compVideoRes = document.getElementById("comp-video-res");
-            const compAudioBitrate =
-                document.getElementById("comp-audio-bitrate");
-            const compAudioMono = document.getElementById("comp-audio-mono");
-            const compSubmitBtn = document.getElementById("comp-submit-btn");
-            const compDownloadBtn =
-                document.getElementById("comp-download-btn");
-
-            if (compVideoCrf) {
-                compVideoCrf.addEventListener("input", (e) => {
-                    if (compCrfVal) compCrfVal.textContent = e.target.value;
-                });
+            function setSelect(id, value) {
+                const select = $(id);
+                if (select && value != null) select.value = value;
             }
 
-            if (compFileInput && compFileInput.parentElement) {
+            bindFilePicker("convert", ["mp4", "mkv", "avi", "mov", "mp3", "wav", "flac", "png", "jpg", "jpeg"]);
+            bindFilePicker("compress", ["mp4", "mkv", "avi", "mov", "mp3", "wav", "flac"]);
+            bindConfigControls();
+            bindProgressListener();
+            updateRelevantSections("convert", "video");
+            updateRelevantSections("compress", "video");
+
+            function bindFilePicker(mode, extensions) {
+                const ui = controls[mode];
+                const input = ui.fileInput;
+                if (!input || !input.parentElement) return;
+
                 if (isTauri) {
-                    compFileInput.parentElement.addEventListener(
-                        "click",
-                        async (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            const selectedFile = await openDialog({
-                                multiple: false,
-                                filters: [
-                                    {
-                                        name: "Media Files",
-                                        extensions: [
-                                            "mp4",
-                                            "mkv",
-                                            "avi",
-                                            "mov",
-                                            "mp3",
-                                            "wav",
-                                            "flac",
-                                        ],
-                                    },
-                                ],
-                            });
-
-                            if (selectedFile) {
-                                handleCompFileSelection(
-                                    selectedFile,
-                                    selectedFile
-                                        .split("\\")
-                                        .pop()
-                                        .split("/")
-                                        .pop(),
-                                );
-                            }
-                        },
-                    );
+                    input.parentElement.addEventListener("click", async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const selectedFile = await openDialog({
+                            multiple: false,
+                            filters: [{ name: "Media Files", extensions }],
+                        });
+                        if (selectedFile) {
+                            handleFileSelection(mode, selectedFile, selectedFile.split("\\").pop().split("/").pop());
+                        }
+                    });
                 } else {
-                    compFileInput.addEventListener("change", (e) => {
+                    input.addEventListener("change", (e) => {
                         if (e.target.files.length > 0) {
                             const file = e.target.files[0];
-                            handleCompFileSelection(file.name, file.name);
+                            handleFileSelection(mode, file.name, file.name, file.size);
                         }
                     });
                 }
+                attachDropState(mode);
             }
 
-            function handleCompFileSelection(filePath, fileName) {
-                compAbsoluteFilePath = filePath;
-                const fileExt = "." + fileName.split(".").pop();
+            function handleFileSelection(mode, filePath, fileName, fileSize) {
+                const ui = controls[mode];
+                const config = state[mode];
+                const ext = "." + fileName.split(".").pop();
+                config.inputPath = filePath;
 
-                compSourceName.textContent = fileName;
-                compSourceExt.textContent = fileExt.toLowerCase();
-                compSubmitBtn.disabled = false;
-                compSubmitBtn.textContent = "Compress";
-                if (compDownloadBtn) compDownloadBtn.style.display = "none";
+                ui.uploadCard.classList.add("has-file");
+                ui.sourceName.textContent = fileName;
+                ui.sourceExt.textContent = ext.toLowerCase();
+                ui.sourceSize.textContent = formatBytes(fileSize);
+                ui.sourceDuration.textContent = "From source";
+                ui.sourceCodec.textContent = ext.replace(".", "").toUpperCase();
+                ui.sourceResolution.textContent = "Original";
+                ui.sourceFps.textContent = "Source";
+                ui.sourceAudio.textContent = "Source";
+                ui.status.textContent = mode === "convert" ? "Ready for a target format." : "Ready to compress into a smaller file.";
+                if (ui.download) ui.download.style.display = "none";
+                resetProgress(mode);
+
+                if (mode === "convert") {
+                    convInputType = ["mp3", "wav", "flac", "aac", "ogg", "m4a"].includes(ext.replace(".", "").toLowerCase()) ? "audio" : "video";
+                    config.container = null;
+                    convDropdownTrigger.textContent = "Target Type";
+                    controls.convert.targetName.textContent = "Choose format";
+                    updateRelevantSections("convert", "video");
+                    renderFormatsList();
+                } else {
+                    config.container = "mp4";
+                    syncConfigFromControls("compress");
+                }
+                updateSubmitState(mode);
             }
 
-            compSubmitBtn.addEventListener("click", async () => {
-                if (!compAbsoluteFilePath) return;
+            function bindConfigControls() {
+                [
+                    "conv-video-codec",
+                    "conv-resolution",
+                    "conv-frame-rate",
+                    "conv-preset",
+                    "conv-audio-codec",
+                    "conv-audio-bitrate",
+                    "conv-channels",
+                    "conv-sample-rate",
+                    "conv-overwrite",
+                    "conv-hardware-accel",
+                    "conv-extra-args",
+                ].forEach((id) => bindControl(id, () => syncConfigFromControls("convert")));
 
+                [
+                    "comp-video-codec",
+                    "comp-video-res",
+                    "comp-frame-rate",
+                    "comp-preset",
+                    "comp-video-crf",
+                    "comp-audio-codec",
+                    "comp-audio-bitrate",
+                    "comp-audio-mono",
+                    "comp-sample-rate",
+                    "comp-overwrite",
+                    "comp-hardware-accel",
+                    "comp-extra-args",
+                ].forEach((id) => bindControl(id, () => syncConfigFromControls("compress")));
+            }
+
+            function bindControl(id, handler) {
+                const element = $(id);
+                if (!element) return;
+                const eventName = element.tagName === "TEXTAREA" || element.type === "range" ? "input" : "change";
+                element.addEventListener(eventName, handler);
+            }
+
+            function syncConfigFromControls(mode) {
+                const config = state[mode];
+                if (mode === "convert") {
+                    Object.assign(config, {
+                        videoCodec: valueOrNull("conv-video-codec"),
+                        audioCodec: valueOrNull("conv-audio-codec"),
+                        resolution: mapResolution($("conv-resolution").value),
+                        frameRate: mapFrameRate($("conv-frame-rate").value),
+                        preset: $("conv-preset").value,
+                        audioBitrate: valueOrNull("conv-audio-bitrate"),
+                        channels: mapChannels($("conv-channels").value),
+                        sampleRate: mapSampleRate($("conv-sample-rate").value),
+                        hardwareAcceleration: $("conv-hardware-accel").checked ? "auto" : "off",
+                        overwrite: $("conv-overwrite").checked,
+                        extraArguments: $("conv-extra-args").value,
+                    });
+                } else {
+                    Object.assign(config, {
+                        container: "mp4",
+                        videoCodec: valueOrNull("comp-video-codec"),
+                        audioCodec: valueOrNull("comp-audio-codec"),
+                        resolution: mapResolution($("comp-video-res").value),
+                        frameRate: mapFrameRate($("comp-frame-rate").value),
+                        preset: $("comp-preset").value,
+                        crf: Number($("comp-video-crf").value),
+                        audioBitrate: valueOrNull("comp-audio-bitrate"),
+                        channels: $("comp-audio-mono").checked ? "mono" : "source",
+                        sampleRate: mapSampleRate($("comp-sample-rate").value),
+                        hardwareAcceleration: $("comp-hardware-accel").checked ? "auto" : "off",
+                        overwrite: $("comp-overwrite").checked,
+                        extraArguments: $("comp-extra-args").value,
+                    });
+                    $("comp-crf-val").textContent = config.crf;
+                }
+                updateSubmitState(mode);
+            }
+
+            function valueOrNull(id) {
+                const value = $(id).value;
+                return value === "" ? null : value;
+            }
+
+            function mapResolution(value) {
+                return {
+                    source: "source",
+                    "720p": "p720",
+                    "1080p": "p1080",
+                    "1440p": "p1440",
+                    "2160p": "p2160",
+                }[value] || "source";
+            }
+
+            function mapFrameRate(value) {
+                return value === "source" ? "source" : `fps${value}`;
+            }
+
+            function mapChannels(value) {
+                return value || "source";
+            }
+
+            function mapSampleRate(value) {
+                return value === "source" ? "source" : `hz${value}`;
+            }
+
+            function updateRelevantSections(mode, kind) {
+                const ui = controls[mode];
+                const videoDisabled = kind === "audio";
+                const audioDisabled = kind === "image";
+                ui.videoSection.classList.toggle("is-disabled", videoDisabled);
+                ui.audioSection.classList.toggle("is-disabled", audioDisabled);
+            }
+
+            function updateSubmitState(mode) {
+                const ui = controls[mode];
+                const config = state[mode];
+                ui.submit.disabled = !config.inputPath || !config.container;
+            }
+
+            // ── Conversion output path tracking ─────────────────────────────
+            const conversionOutput = { convert: null, compress: null };
+
+            // ── Output panel state helpers ───────────────────────────────────
+            function setOutputPanelState(mode, convState) {
+                const panelId = mode === "convert" ? "conv-output-panel" : "comp-output-panel";
+                const panel = $(panelId);
+                if (panel) panel.dataset.convState = convState;
+            }
+
+            // ── Non-blocking runConfig ───────────────────────────────────────
+            async function runConfig(mode) {
+                const ui = controls[mode];
+                const config = state[mode];
+                const error = validateConfig(config);
+                if (error) {
+                    ui.status.textContent = error;
+                    return;
+                }
                 if (!isTauri) {
-                    alert(
-                        "This feature requires running inside the Tauri desktop app.",
-                    );
+                    alert("This feature requires running inside the Tauri desktop app.");
                     return;
                 }
 
                 const targetFolderDirectory = await openDialog({
                     directory: true,
                     multiple: false,
-                    title: "Select Compression Output Folder",
+                    title: mode === "convert" ? "Choose Destination Folder" : "Select Compression Output Folder",
                 });
-
                 if (!targetFolderDirectory) return;
 
-                compSubmitBtn.textContent = "Compiling...";
-                compSubmitBtn.disabled = true;
+                config.outputDir = targetFolderDirectory;
+                ui.saveLocation.textContent = targetFolderDirectory.split("\\").pop().split("/").pop() || "Selected";
+
+                // Disable submit so user can't double-start
+                ui.submit.textContent = "Converting…";
+                ui.submit.disabled = true;
 
                 try {
-                    const successMessage = await invoke("run_compression", {
-                        inputPath: compAbsoluteFilePath,
-                        targetDir: targetFolderDirectory,
-                        crf: compVideoCrf.value,
-                        resolution: compVideoRes.value,
-                        bitrate: compAudioBitrate.value,
-                        mono: compAudioMono.checked,
-                    });
-
-                    compSubmitBtn.textContent = "Success!";
-                    alert(successMessage);
-                    compSubmitBtn.disabled = false;
-                    compSubmitBtn.textContent = "Compress";
+                    // Returns immediately — progress comes via events
+                    await invoke("start_conversion", { config: { ...config } });
                 } catch (err) {
-                    alert("Desktop Compression Failure: " + err);
-                    resetComp();
+                    ui.status.textContent = String(err);
+                    ui.submit.textContent = mode === "convert" ? "Convert" : "Compress";
+                    updateSubmitState(mode);
                 }
-            });
+            }
 
-            function resetComp() {
-                compSubmitBtn.textContent = "Compress";
-                compSubmitBtn.disabled = false;
+            function validateConfig(config) {
+                if (!config.inputPath) return "Choose a source file before starting.";
+                if (!config.container) return "Choose an output format before starting.";
+                return "";
+            }
+
+            $("conv-submit-btn").addEventListener("click", () => runConfig("convert"));
+            $("comp-submit-btn").addEventListener("click", () => runConfig("compress"));
+
+            // ── Event-driven progress system ─────────────────────────────────
+            function bindProgressListener() {
+                if (!listen) return;
+
+                listen("conversion_started", (event) => {
+                    const p = event.payload || {};
+                    const mode = state.activeMode;
+                    const prefix = mode === "convert" ? "conv" : "comp";
+
+                    conversionOutput[mode] = p.outputPath || null;
+
+                    // Show encoder card
+                    setOutputPanelState(mode, "encoding");
+                    const filename = p.filename || "File";
+                    $(`${prefix}-enc-filename`).textContent = filename;
+                    $(`${prefix}-enc-stage`).textContent = "Analyzing…";
+                    $(`${prefix}-enc-pct`).textContent = "0%";
+                    $(`${prefix}-enc-bar`).style.width = "0%";
+                    resetEncoderStats(prefix);
+                    // Clear any previous error
+                    $(`${prefix}-enc-error`).textContent = "";
+                    $(`${prefix}-enc-error`).style.display = "none";
+                });
+
+                listen("ffmpeg_progress", (event) => {
+                    const p = event.payload || {};
+                    const mode = state.activeMode;
+                    const prefix = mode === "convert" ? "conv" : "comp";
+                    updateEncoderCard(prefix, p);
+                    // Also keep the legacy stats panel in sync for non-encoding state
+                    updateProgress(mode, p);
+                });
+
+                listen("conversion_complete", (event) => {
+                    const p = event.payload || {};
+                    const mode = state.activeMode;
+                    const prefix = mode === "convert" ? "conv" : "comp";
+                    const ui = controls[mode];
+
+                    conversionOutput[mode] = p.outputPath || conversionOutput[mode];
+
+                    // Transition to done state
+                    setOutputPanelState(mode, "done");
+
+                    // Populate completion card
+                    const origFmt = formatBytes(p.originalSize || 0);
+                    const outFmt  = formatBytes(p.outputSize  || 0);
+                    $(`${prefix}-done-orig`).textContent = origFmt;
+                    $(`${prefix}-done-out`).textContent  = outFmt;
+
+                    const savingsBadge = $(`${prefix}-done-savings`);
+                    if (p.originalSize > 0 && p.outputSize > 0 && p.originalSize > p.outputSize) {
+                        const pct = (((p.originalSize - p.outputSize) / p.originalSize) * 100).toFixed(1);
+                        savingsBadge.textContent = `–${pct}% saved`;
+                        savingsBadge.style.display = "inline-flex";
+                    } else {
+                        savingsBadge.style.display = "none";
+                    }
+
+                    $(`${prefix}-done-time`).textContent = formatElapsed(p.elapsedSecs || 0);
+                    $(`${prefix}-done-subtitle`).textContent = p.message || "Finished successfully";
+
+                    // Wire done-card buttons
+                    $(`${prefix}-done-folder`).onclick = () => isTauri && invoke("open_in_explorer", { path: p.outputPath || "" });
+                    $(`${prefix}-done-file`).onclick   = () => isTauri && invoke("open_file",        { path: p.outputPath || "" });
+                    $(`${prefix}-done-again`).onclick  = () => resetForNewConversion(mode);
+
+                    // Update legacy stats
+                    ui.progress.textContent = "100%";
+                    ui.status.textContent = p.message || "Conversion complete.";
+
+                    // Re-enable submit
+                    ui.submit.textContent = mode === "convert" ? "Convert" : "Compress";
+                    updateSubmitState(mode);
+                });
+
+                listen("conversion_failed", (event) => {
+                    const p = event.payload || {};
+                    const mode = state.activeMode;
+                    const prefix = mode === "convert" ? "conv" : "comp";
+                    const ui = controls[mode];
+
+                    setOutputPanelState(mode, "error");
+
+                    const errBox = $(`${prefix}-enc-error`);
+                    errBox.textContent = p.message || "Conversion failed.";
+                    errBox.style.display = "block";
+                    $(`${prefix}-enc-stage`).textContent = "Failed";
+
+                    ui.status.textContent = p.message || "Conversion failed.";
+                    ui.submit.textContent = mode === "convert" ? "Convert" : "Compress";
+                    updateSubmitState(mode);
+                });
+
+                listen("conversion_cancelled", () => {
+                    const mode = state.activeMode;
+                    const ui = controls[mode];
+                    setOutputPanelState(mode, "");
+                    ui.status.textContent = "Conversion cancelled.";
+                    ui.submit.textContent = mode === "convert" ? "Convert" : "Compress";
+                    updateSubmitState(mode);
+                    resetProgress(mode);
+                });
+            }
+
+            // ── Encoder card live update ──────────────────────────────────────
+            function updateEncoderCard(prefix, p) {
+                const pct = Math.round(p.percentage || 0);
+                $(`${prefix}-enc-pct`).textContent  = `${pct}%`;
+                $(`${prefix}-enc-bar`).style.width  = `${pct}%`;
+                $(`${prefix}-enc-stage`).textContent = p.stage || "Encoding…";
+                $(`${prefix}-enc-elapsed`).textContent   = p.elapsed   || "00:00";
+                $(`${prefix}-enc-remaining`).textContent = p.remaining || "—";
+                $(`${prefix}-enc-speed`).textContent     = p.speed     || "—";
+                $(`${prefix}-enc-fps`).textContent       = p.fps       ? `${p.fps}` : "—";
+                $(`${prefix}-enc-bitrate`).textContent   = p.bitrate   || "—";
+                $(`${prefix}-enc-size`).textContent      = p.outputSize || "—";
+                $(`${prefix}-enc-encoder`).textContent   = p.encoder   || "—";
+                $(`${prefix}-enc-eta`).textContent       = p.eta       || "—";
+            }
+
+            function resetEncoderStats(prefix) {
+                ["elapsed","remaining","speed","fps","bitrate","size","encoder","eta"].forEach(k => {
+                    $(`${prefix}-enc-${k}`).textContent = "—";
+                });
+            }
+
+            // ── Cancel button wiring ─────────────────────────────────────────
+            if (isTauri) {
+                $("conv-cancel-btn").addEventListener("click", () => invoke("cancel_conversion"));
+                $("comp-cancel-btn").addEventListener("click", () => invoke("cancel_conversion"));
+            }
+
+            // ── Reset for a new conversion ───────────────────────────────────
+            function resetForNewConversion(mode) {
+                setOutputPanelState(mode, "");
+                const ui = controls[mode];
+                ui.status.textContent = mode === "convert"
+                    ? "Select a source file and target format to prepare conversion."
+                    : "Select a source file to prepare compression.";
+                resetProgress(mode);
+                updateSubmitState(mode);
+            }
+
+            // ── Legacy progress stats (small grid in idle output panel) ──────
+            function updateProgress(mode, progress) {
+                const ui = controls[mode];
+                ui.progress.textContent = `${Math.round(progress.percentage || 0)}%`;
+                ui.elapsed.textContent = progress.elapsed || "00:00";
+                ui.remaining.textContent = progress.remaining || "--";
+                ui.speed.textContent = [progress.fps ? `${progress.fps} fps` : null, progress.speed].filter(Boolean).join(" / ") || "--";
+                ui.size.textContent = [progress.outputSize, progress.bitrate].filter(Boolean).join(" / ") || "After run";
+            }
+
+            function resetProgress(mode) {
+                const ui = controls[mode];
+                ui.progress.textContent = "0%";
+                ui.elapsed.textContent = "00:00";
+                ui.remaining.textContent = "--";
+                ui.speed.textContent = "--";
+                ui.size.textContent = "After run";
+            }
+
+            function formatElapsed(secs) {
+                const s = Math.round(secs);
+                const m = Math.floor(s / 60);
+                const h = Math.floor(m / 60);
+                if (h > 0) return `${h}h ${m % 60}m ${s % 60}s`;
+                if (m > 0) return `${m}m ${s % 60}s`;
+                return `${s}s`;
+            }
+
+            function formatBytes(bytes) {
+                if (!Number.isFinite(bytes) || bytes <= 0) return "—";
+                const units = ["B", "KB", "MB", "GB", "TB"];
+                const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+                return `${(bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
+            }
+
+            function attachDropState(mode) {
+                const ui = controls[mode];
+                const card = ui.uploadCard;
+                if (!card) return;
+
+                ["dragenter", "dragover"].forEach((eventName) => {
+                    card.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        card.classList.add("is-dragging");
+                    });
+                });
+
+                ["dragleave", "drop"].forEach((eventName) => {
+                    card.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        card.classList.remove("is-dragging");
+                    });
+                });
+
+                card.addEventListener("drop", (e) => {
+                    const file = e.dataTransfer && e.dataTransfer.files[0];
+                    if (!file || isTauri) return;
+                    handleFileSelection(mode, file.name, file.name, file.size);
+                    if (ui.fileInput) ui.fileInput.files = e.dataTransfer.files;
+                });
             }
         </script>
     </body>

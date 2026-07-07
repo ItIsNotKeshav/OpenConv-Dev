@@ -11,9 +11,10 @@ path = "src/main.rs"
 
 [dependencies]
 # The core Tauri engine infrastructure layout framework
-tauri = { version = "1.8", features = [ "dialog-open"] }
+tauri = { version = "1.8", features = ["dialog-open", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
 
 [build-dependencies]
 # Compiles the background system settings hooks on build runtime execution
@@ -22,4 +23,3 @@ tauri-build = { version = "1.5", features = [] }
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
-
