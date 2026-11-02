@@ -1,0 +1,15 @@
+[package]
+name = "openconv-core"
+version = "0.1.0"
+description = "FFmpeg command building, path handling and progress parsing for OpenConv"
+edition = "2021"
+publish = false
+
+# This crate holds all of OpenConv's logic that does not need a window, so it
+# can be unit tested without the Tauri / WebKit system libraries installed.
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1.0"

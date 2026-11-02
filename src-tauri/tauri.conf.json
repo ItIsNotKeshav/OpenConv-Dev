@@ -18,6 +18,7 @@
       "active": true,
       "identifier": "com.openconv.app",
       "icon": [
+        "icons/icon.png",
         "icons/icon.ico"
       ]
     },

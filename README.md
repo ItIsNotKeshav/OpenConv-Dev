@@ -48,3 +48,26 @@ Required for compiling the Tauri backend.
    ```bash
    npm run tauri build
    ```
+
+## Project Layout
+
+- `src/` – the UI: `index.html` (markup and styles), `app.js` (behaviour) and `formats.js` (the output format list).
+- `src-tauri/src/main.rs` – the Tauri app: commands, process handling and events.
+- `src-tauri/core/` – `openconv-core`, all logic that doesn't need a window: building FFmpeg arguments, choosing output paths, parsing progress and turning FFmpeg errors into readable messages.
+
+> [!NOTE]
+> To add an output format, add it to `formats.js` **and** to `FORMAT_PRESETS` in `app.js`. Formats without a preset are hidden from the picker, and a backend `Container` must exist for the preset's `container` value (the tests check this).
+
+## Testing
+
+```bash
+npm run lint        # ESLint for the UI scripts
+npm test            # UI tests (Vitest + jsdom)
+npm run test:rust   # Rust tests for openconv-core
+npm run lint:rust   # rustfmt + clippy (needs the Tauri system libraries)
+npm run check       # lint + UI tests + Rust tests
+```
+
+The Rust tests include end-to-end conversions with the real `ffmpeg` binary for every output format. They are skipped when `ffmpeg` is not on your PATH; set `OPENCONV_REQUIRE_FFMPEG=1` to make that an error instead (CI does this).
+
+`openconv-core` has no Tauri dependency, so `npm run test:rust` works without the WebKit/GTK libraries. CI (`.github/workflows/ci.yml`) runs everything on every pull request, and also type-checks the full app on Linux, Windows and macOS.
