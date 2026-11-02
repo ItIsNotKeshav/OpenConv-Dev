@@ -15,10 +15,16 @@ tauri = { version = "1.8", features = ["dialog-open", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1", features = ["full"] }
+# All FFmpeg / path / progress logic; lives in its own crate so it can be
+# tested without the Tauri system libraries.
+openconv-core = { path = "core" }
 
 [build-dependencies]
 # Compiles the background system settings hooks on build runtime execution
 tauri-build = { version = "1.5", features = [] }
+
+[workspace]
+members = ["core"]
 
 [features]
 default = ["custom-protocol"]
