@@ -473,6 +473,12 @@ async function runConfig(mode) {
         alert("This feature requires running inside the Tauri desktop app.");
         return;
     }
+    if (runningMode) {
+        // One FFmpeg run at a time; the backend refuses a second one too, and
+        // the running conversion must keep its panel.
+        ui.status.textContent = "A conversion is already running. Cancel it or wait for it to finish.";
+        return;
+    }
 
     const targetFolderDirectory = await openDialog({
         directory: true,

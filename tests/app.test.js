@@ -292,6 +292,29 @@ describe("progress events", () => {
     });
 });
 
+describe("concurrent runs", () => {
+    it("does not start a second run from the other tab or steal the first run's panel", async () => {
+        const app = loadApp({ dialogResults: [SOURCE, OUT_DIR, SOURCE, OUT_DIR] });
+        await chooseFileAndFormat(app, "MP4");
+        await submit(app);
+        app.emit("conversion_started", { filename: "holiday.mov", outputPath: "x" });
+
+        app.$("tab-compress").click();
+        app.$("comp-file-input").parentElement.click();
+        await app.flush();
+        app.$("comp-submit-btn").click();
+        await app.flush();
+
+        const starts = app.invoke.mock.calls.filter(([cmd]) => cmd === "start_conversion");
+        expect(starts).toHaveLength(1);
+        expect(app.$("comp-target-status").textContent).toContain("already running");
+
+        app.emit("conversion_complete", { outputPath: "x", originalSize: 1, outputSize: 1 });
+        expect(app.$("conv-output-panel").dataset.convState).toBe("done");
+        expect(app.$("conv-submit-btn").disabled).toBe(false);
+    });
+});
+
 describe("outside the desktop app", () => {
     it("explains that conversion needs Tauri", async () => {
         const app = loadApp({ tauri: false });
